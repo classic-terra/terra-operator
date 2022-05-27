@@ -1,0 +1,16 @@
+apiVersion: terra.rebels.info/v1alpha1
+kind: Validator
+metadata:
+  name: example-validator
+  namespace: terra
+spec:
+  pubKey: VALIDATOR_PUB_KEY
+  address: VALIDATOR_TERRAVALOPER_ADDRESS
+  name: VALIDATOR_MONIKER
+  website: VALIDATOR_WEBSITE
+  description: VALIDATOR_DESCRIPTION
+  initialCommissionRate: "0.20"
+  maximumCommission: "1.00"
+  commissionChangeRate: "0.01"
+  minimumSelfBondAmount: "1"
+  initialSelfBondAmount: "1"
