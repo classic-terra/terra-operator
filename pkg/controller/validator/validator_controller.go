@@ -127,7 +127,6 @@ func newPodForCR(cr *terrav1alpha1.Validator) *corev1.Pod {
 		"app": cr.Name,
 	}
 
-	//TODO: Change to use a terrad image instead with spec values from validator instance
 	return &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name + "-pod",
@@ -137,7 +136,8 @@ func newPodForCR(cr *terrav1alpha1.Validator) *corev1.Pod {
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
 				{
-					Name:    "terrad",
+					Name: "terrad",
+					//TODO: Change this to use another image later
 					Image:   "ryanhendricks/docker-terra:latest",
 					EnvFrom: cr.EnvFrom,
 				},
