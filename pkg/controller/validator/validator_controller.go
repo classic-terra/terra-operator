@@ -21,11 +21,6 @@ import (
 
 var log = logf.Log.WithName("controller_validator")
 
-/**
-* USER ACTION REQUIRED: This is a scaffold file intended for the user to modify with their own Controller
-* business logic.  Delete these comments after modifying this file.*
- */
-
 // Add creates a new Validator Controller and adds it to the Manager. The Manager will set fields on the Controller
 // and Start it when the Manager is Started.
 func Add(mgr manager.Manager) error {
@@ -51,7 +46,6 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 		return err
 	}
 
-	// TODO(user): Modify this to be the types you create that are owned by the primary resource
 	// Watch for changes to secondary resource Pods and requeue the owner Validator
 	err = c.Watch(&source.Kind{Type: &corev1.Pod{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
@@ -77,8 +71,6 @@ type ReconcileValidator struct {
 
 // Reconcile reads that state of the cluster for a Validator object and makes changes based on the state read
 // and what is in the Validator.Spec
-// TODO(user): Modify this Reconcile function to implement your Controller logic.  This example creates
-// a Pod as an example
 // Note:
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
@@ -134,6 +126,8 @@ func newPodForCR(cr *terrav1alpha1.Validator) *corev1.Pod {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
+
+	//TODO: Change to use a terrad image instead with spec values from validator instance
 	return &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name + "-pod",
@@ -143,9 +137,8 @@ func newPodForCR(cr *terrav1alpha1.Validator) *corev1.Pod {
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
 				{
-					Name:    "busybox",
-					Image:   "busybox",
-					Command: []string{"sleep", "3600"},
+					Name:  "terrad",
+					Image: "ryanhendricks/docker-terra:latest",
 				},
 			},
 		},
