@@ -1,6 +1,7 @@
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -40,8 +41,9 @@ type Validator struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   ValidatorSpec   `json:"spec,omitempty"`
-	Status ValidatorStatus `json:"status,omitempty"`
+	EnvFrom []corev1.EnvFromSource `json:"envFrom,omitempty"`
+	Spec    ValidatorSpec          `json:"spec,omitempty"`
+	Status  ValidatorStatus        `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
