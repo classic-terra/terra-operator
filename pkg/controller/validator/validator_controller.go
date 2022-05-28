@@ -136,9 +136,8 @@ func newPodForCR(cr *terrav1alpha1.Validator) *corev1.Pod {
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
 				{
-					Name: "terrad",
-					//TODO: Change this to use another image later
-					Image:   "ryanhendricks/docker-terra:latest",
+					Name:    "terrad",
+					Image:   "terramoney/core-node:v0.5.11-oracle",
 					EnvFrom: cr.EnvFrom,
 				},
 			},
