@@ -1,22 +1,22 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: terradnodes.terra.rebels.info
+  name: validators.terra.rebels.info
 spec:
   group: terra.rebels.info
   names:
-    kind: TerradNode
-    listKind: TerradNodeList
-    plural: terradnodes
-    singular: terradnode
+    kind: Validator
+    listKind: ValidatorList
+    plural: validators
+    singular: validator
   scope: Namespaced
   versions:
   - name: v1alpha1
     served: true
     storage: true
-    schema:
+    schema:    
       openAPIV3Schema:
-        description: TerradNode is the Schema for the terradnodes API
+        description: Validator is the Schema for the validators API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -63,22 +63,48 @@ spec:
           metadata:
             type: object
           spec:
-            description: TerradNodeSpec defines the desired state of TerradNode
+            description: ValidatorSpec defines the desired state of Validator
             properties:
-              isFullNode:
-                type: boolean
+              address:
+                type: string
+              commissionChangeRate:
+                type: string
+              description:
+                type: string
+              initialCommissionRate:
+                type: string
+              initialSelfBondAmount:
+                type: string
               isTerra2:
+                type: boolean
+              maximumCommission:
+                type: string
+              minimumSelfBondAmount:
+                type: string
+              name:
+                type: string
+              pubKey:
                 description: 'Important: Run "operator-sdk generate k8s" to regenerate
                   code after modifying this file Add custom validation using kubebuilder
                   tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
-                type: boolean
+                type: string
+              website:
+                type: string
             required:
-            - isFullNode
+            - address
+            - commissionChangeRate
+            - initialCommissionRate
+            - initialSelfBondAmount
             - isTerra2
+            - maximumCommission
+            - minimumSelfBondAmount
+            - name
+            - pubKey
             type: object
           status:
-            description: TerradNodeStatus defines the observed state of TerradNode
+            description: ValidatorStatus defines the observed state of Validator
             type: object
         type: object
     subresources:
       status: {}
+      
