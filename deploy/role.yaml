@@ -71,6 +71,7 @@ rules:
   - terra.rebels.info
   resources:
   - '*'
+  - validators
   verbs:
   - create
   - delete

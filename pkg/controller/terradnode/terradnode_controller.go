@@ -6,6 +6,7 @@ import (
 	terrav1alpha1 "github.com/terra-rebels/terra-operator/pkg/apis/terra/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -134,8 +135,6 @@ func (r *ReconcileTerradNode) Reconcile(request reconcile.Request) (reconcile.Re
 
 	// Define a new Service object
 	service := newServiceForCR(instance)
-
-	// TODO: Figure out if we should have 1 service per pod or one for all pods.
 	service.Spec.Selector = pod.ObjectMeta.Labels
 
 	// Set TerradNode instance as the owner and controller
@@ -189,12 +188,21 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		},
 	}
 
-	// TODO: Implement logic to allow toggling of request limits. Nukes my dev machine.
 	// 4 CPUs, 32GB memory & 2TB of storage as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
-	minimumRequestLimits := corev1.ResourceList{
-		//corev1.ResourceCPU:              resource.MustParse("4000m"),
-		//corev1.ResourceMemory:           resource.MustParse("32Gi"),
-		//corev1.ResourceEphemeralStorage: resource.MustParse("2Ti"),
+	minimumRequestLimits := corev1.ResourceList{}
+
+	if cr.Spec.IsFullNode {
+		minimumRequestLimits = corev1.ResourceList{
+			corev1.ResourceCPU:              resource.MustParse("4000m"),
+			corev1.ResourceMemory:           resource.MustParse("32Gi"),
+			corev1.ResourceEphemeralStorage: resource.MustParse("2Ti"),
+		}
+	}
+
+	podImage := "toban/classic-core-node"
+
+	if cr.Spec.IsTerra2 {
+		podImage = "terramoney/core"
 	}
 
 	return &corev1.Pod{
@@ -207,7 +215,7 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			Containers: []corev1.Container{
 				{
 					Name:    "terrad",
-					Image:   "toban/classic-core-node",
+					Image:   podImage,
 					EnvFrom: cr.EnvFrom,
 					Ports:   ports,
 					Resources: corev1.ResourceRequirements{
@@ -224,7 +232,6 @@ func newServiceForCR(cr *terrav1alpha1.TerradNode) *corev1.Service {
 		"app": cr.Name,
 	}
 
-	// TODO: Figure out how to dynamically generate service ports (managerCount + 1 style logic)
 	const (
 		servicePortSeed = 50000
 	)
