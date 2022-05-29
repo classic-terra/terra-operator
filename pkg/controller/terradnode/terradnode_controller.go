@@ -206,7 +206,7 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			Containers: []corev1.Container{
 				{
 					Name:    "terrad",
-					Image:   "terramoney/core-node:v0.5.11-oracle",
+					Image:   "toban/classic-core-node:v0.5.11-oracle",
 					EnvFrom: cr.EnvFrom,
 					Ports:   ports,
 					Resources: corev1.ResourceRequirements{
