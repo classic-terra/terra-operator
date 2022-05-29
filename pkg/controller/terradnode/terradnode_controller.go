@@ -89,7 +89,6 @@ func (r *ReconcileTerradNode) Reconcile(request reconcile.Request) (reconcile.Re
 	reqLogger.Info("Reconciling TerradNode")
 
 	instance := &terrav1alpha1.TerradNode{}
-
 	err := r.client.Get(context.TODO(), request.NamespacedName, instance)
 
 	if err != nil {
@@ -115,6 +114,7 @@ func (r *ReconcileTerradNode) Reconcile(request reconcile.Request) (reconcile.Re
 	// Check if this Pod already exists
 	foundPod := &corev1.Pod{}
 	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, foundPod)
+
 	if err != nil && errors.IsNotFound(err) {
 		reqLogger.Info("Creating a new Pod", "Pod.Namespace", pod.Namespace, "Pod.Name", pod.Name)
 
@@ -146,6 +146,7 @@ func (r *ReconcileTerradNode) Reconcile(request reconcile.Request) (reconcile.Re
 	// Check if this Service already exists
 	foundService := &corev1.Service{}
 	err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, foundService)
+
 	if err != nil && errors.IsNotFound(err) {
 		reqLogger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
 		err = r.client.Create(context.TODO(), service)
@@ -153,7 +154,7 @@ func (r *ReconcileTerradNode) Reconcile(request reconcile.Request) (reconcile.Re
 			return reconcile.Result{}, err
 		}
 
-		// Pod Service successfully - don't requeue
+		// Service created successfully - don't requeue
 		return reconcile.Result{}, nil
 	} else if err != nil {
 		return reconcile.Result{}, err
@@ -188,7 +189,7 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		},
 	}
 
-	//TODO: Implement logic to allow toggling of request limits
+	// TODO: Implement logic to allow toggling of request limits. Nukes my dev machine.
 	// 4 CPUs, 32GB memory & 2TB of storage as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
 	minimumRequestLimits := corev1.ResourceList{
 		//corev1.ResourceCPU:              resource.MustParse("4000m"),
