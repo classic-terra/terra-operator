@@ -191,9 +191,9 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 
 	// 4 CPUs, 32GB memory & 2TB of storage as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
 	minimumRequestLimits := corev1.ResourceList{
-		corev1.ResourceCPU:     resource.MustParse("4000m"),
-		corev1.ResourceMemory:  resource.MustParse("32Gi"),
-		corev1.ResourceStorage: resource.MustParse("2Ti"),
+		corev1.ResourceCPU:              resource.MustParse("4000m"),
+		corev1.ResourceMemory:           resource.MustParse("32Gi"),
+		corev1.ResourceEphemeralStorage: resource.MustParse("2Ti"),
 	}
 
 	return &corev1.Pod{
@@ -225,21 +225,28 @@ func newServiceForCR(cr *terrav1alpha1.TerradNode) *corev1.Service {
 
 	// TODO: Figure out how to dynamically generate service ports (managerCount + 1 style logic)
 	const (
-		p2pPort = 99900 + iota
-		rpcPort = 99900 + iota
-		lcdPort = 99900 + iota
+		servicePortSeed = 50000
+	)
+
+	const (
+		p2pPort = servicePortSeed + iota
+		rpcPort = servicePortSeed + iota
+		lcdPort = servicePortSeed + iota
 	)
 
 	ports := []corev1.ServicePort{
 		{
+			Name:       "p2p",
 			Port:       p2pPort,
 			TargetPort: intstr.FromString("p2p"),
 		},
 		{
+			Name:       "rpc",
 			Port:       rpcPort,
 			TargetPort: intstr.FromString("rpc"),
 		},
 		{
+			Name:       "lcd",
 			Port:       lcdPort,
 			TargetPort: intstr.FromString("lcd"),
 		},
