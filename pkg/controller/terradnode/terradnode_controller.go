@@ -191,11 +191,12 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 	// 4 CPUs, 32GB memory & 2TB of storage as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
 	minimumRequestLimits := corev1.ResourceList{}
 
+	//TODO: Figure out what to do with storage. We could mount it as a volume that uses AWS ESB provisioned via Crossplane.
 	if cr.Spec.IsFullNode {
 		minimumRequestLimits = corev1.ResourceList{
-			corev1.ResourceCPU:              resource.MustParse("4000m"),
-			corev1.ResourceMemory:           resource.MustParse("32Gi"),
-			corev1.ResourceEphemeralStorage: resource.MustParse("2Ti"),
+			corev1.ResourceCPU:    resource.MustParse("4000m"),
+			corev1.ResourceMemory: resource.MustParse("32Gi"),
+			//corev1.ResourceEphemeralStorage: resource.MustParse("2Ti"),
 		}
 	}
 
