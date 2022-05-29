@@ -172,19 +172,19 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 	// Terrad default ports @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
 	ports := []corev1.ContainerPort{
 		{
-			Name:          "LCD",
+			Name:          "lcd",
 			ContainerPort: 1317,
 		},
 		{
-			Name:          "P2P",
+			Name:          "p2p",
 			ContainerPort: 26656,
 		},
 		{
-			Name:          "RPC",
+			Name:          "rpc",
 			ContainerPort: 26657,
 		},
 		{
-			Name:          "Prometheus",
+			Name:          "prometheus",
 			ContainerPort: 26660,
 		},
 	}
@@ -192,8 +192,8 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 	// 4 CPUs, 32GB memory & 2TB of storage as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
 	minimumRequestLimits := corev1.ResourceList{
 		corev1.ResourceCPU:     resource.MustParse("4000m"),
-		corev1.ResourceMemory:  resource.MustParse("32GiB"),
-		corev1.ResourceStorage: resource.MustParse("2TiB"),
+		corev1.ResourceMemory:  resource.MustParse("32Gi"),
+		corev1.ResourceStorage: resource.MustParse("2Ti"),
 	}
 
 	return &corev1.Pod{
@@ -233,15 +233,15 @@ func newServiceForCR(cr *terrav1alpha1.TerradNode) *corev1.Service {
 	ports := []corev1.ServicePort{
 		{
 			Port:       p2pPort,
-			TargetPort: intstr.FromString("P2P"),
+			TargetPort: intstr.FromString("p2p"),
 		},
 		{
 			Port:       rpcPort,
-			TargetPort: intstr.FromString("RPC"),
+			TargetPort: intstr.FromString("rpc"),
 		},
 		{
 			Port:       lcdPort,
-			TargetPort: intstr.FromString("LCD"),
+			TargetPort: intstr.FromString("lcd"),
 		},
 	}
 
