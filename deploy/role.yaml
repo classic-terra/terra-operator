@@ -70,7 +70,7 @@ rules:
 - apiGroups:
   - terra.rebels.info
   resources:
-  - '*'
+  - terradnodes
   - validators
   verbs:
   - create
