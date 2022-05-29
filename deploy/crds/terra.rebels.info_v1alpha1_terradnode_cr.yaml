@@ -1,7 +1,7 @@
 apiVersion: terra.rebels.info/v1alpha1
-kind: Validator
+kind: TerradNode
 metadata:
-  name: example-validator
+  name: example-terradnode
   namespace: terra
 spec:
   pubKey: VALIDATOR_PUB_KEY

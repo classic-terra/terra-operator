@@ -16,7 +16,8 @@ spec:
       serviceAccountName: terra-operator
       containers:
         - name: terra-operator
-          image: toban/terra-operator
+          # Replace this with the built image name
+          image: REPLACE_IMAGE
           command:
           - terra-operator
           imagePullPolicy: Always

@@ -1,4 +1,4 @@
-package validator
+package terradnode
 
 import (
 	"context"
@@ -19,38 +19,48 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
-var log = logf.Log.WithName("controller_validator")
+var log = logf.Log.WithName("controller_terradnode")
 
-// Add creates a new Validator Controller and adds it to the Manager. The Manager will set fields on the Controller
-// and Start it when the Manager is Started.
+// Add creates a new TerradNode Controller and adds it to the Manage
 func Add(mgr manager.Manager) error {
 	return add(mgr, newReconciler(mgr))
 }
 
 // newReconciler returns a new reconcile.Reconciler
 func newReconciler(mgr manager.Manager) reconcile.Reconciler {
-	return &ReconcileValidator{client: mgr.GetClient(), scheme: mgr.GetScheme()}
+	return &ReconcileTerradNode{client: mgr.GetClient(), scheme: mgr.GetScheme()}
 }
 
 // add adds a new Controller to mgr with r as the reconcile.Reconciler
 func add(mgr manager.Manager, r reconcile.Reconciler) error {
-	// Create a new controller
-	c, err := controller.New("validator-controller", mgr, controller.Options{Reconciler: r})
+	c, err := controller.New("terradnode-controller", mgr, controller.Options{Reconciler: r})
+
 	if err != nil {
 		return err
 	}
 
-	// Watch for changes to primary resource Validator
-	err = c.Watch(&source.Kind{Type: &terrav1alpha1.Validator{}}, &handler.EnqueueRequestForObject{})
+	// Watch for changes to primary resource TerradNode
+	err = c.Watch(&source.Kind{Type: &terrav1alpha1.TerradNode{}}, &handler.EnqueueRequestForObject{})
+
 	if err != nil {
 		return err
 	}
 
-	// Watch for changes to secondary resource Pods and requeue the owner Validator
+	// Watch for changes to secondary resources and requeue the owner TerradNode
 	err = c.Watch(&source.Kind{Type: &corev1.Pod{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
-		OwnerType:    &terrav1alpha1.Validator{},
+		OwnerType:    &terrav1alpha1.TerradNode{},
 	})
+
+	if err != nil {
+		return err
+	}
+
+	err = c.Watch(&source.Kind{Type: &corev1.Service{}}, &handler.EnqueueRequestForOwner{
+		IsController: true,
+		OwnerType:    &terrav1alpha1.TerradNode{},
+	})
+
 	if err != nil {
 		return err
 	}
@@ -58,29 +68,29 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	return nil
 }
 
-// blank assignment to verify that ReconcileValidator implements reconcile.Reconciler
-var _ reconcile.Reconciler = &ReconcileValidator{}
+// blank assignment to verify that ReconcileTerradNode implements reconcile.Reconciler
+var _ reconcile.Reconciler = &ReconcileTerradNode{}
 
-// ReconcileValidator reconciles a Validator object
-type ReconcileValidator struct {
+// ReconcileTerradNode reconciles a TerradNode object
+type ReconcileTerradNode struct {
 	// This client, initialized using mgr.Client() above, is a split client
 	// that reads objects from the cache and writes to the apiserver
 	client client.Client
 	scheme *runtime.Scheme
 }
 
-// Reconcile reads that state of the cluster for a Validator object and makes changes based on the state read
-// and what is in the Validator.Spec
-// Note:
+// Reconcile reads that state of the cluster for a TerradNode object and makes changes based on the state read
+// and what is in the TerradNode.Spec
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
-func (r *ReconcileValidator) Reconcile(request reconcile.Request) (reconcile.Result, error) {
+func (r *ReconcileTerradNode) Reconcile(request reconcile.Request) (reconcile.Result, error) {
 	reqLogger := log.WithValues("Request.Namespace", request.Namespace, "Request.Name", request.Name)
-	reqLogger.Info("Reconciling Validator")
+	reqLogger.Info("Reconciling TerradNode")
 
-	// Fetch the Validator instance
-	instance := &terrav1alpha1.Validator{}
+	instance := &terrav1alpha1.TerradNode{}
+
 	err := r.client.Get(context.TODO(), request.NamespacedName, instance)
+
 	if err != nil {
 		if errors.IsNotFound(err) {
 			// Request object not found, could have been deleted after reconcile request.
@@ -88,6 +98,7 @@ func (r *ReconcileValidator) Reconcile(request reconcile.Request) (reconcile.Res
 			// Return and don't requeue
 			return reconcile.Result{}, nil
 		}
+
 		// Error reading the object - requeue the request.
 		return reconcile.Result{}, err
 	}
@@ -95,18 +106,22 @@ func (r *ReconcileValidator) Reconcile(request reconcile.Request) (reconcile.Res
 	// Define a new Pod object
 	pod := newPodForCR(instance)
 
-	// Set Validator instance as the owner and controller
+	// Set TerradNode instance as the owner and controller
 	if err := controllerutil.SetControllerReference(instance, pod, r.scheme); err != nil {
 		return reconcile.Result{}, err
 	}
 
 	// Check if this Pod already exists
-	found := &corev1.Pod{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, found)
+	foundPod := &corev1.Pod{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, foundPod)
 	if err != nil && errors.IsNotFound(err) {
 		reqLogger.Info("Creating a new Pod", "Pod.Namespace", pod.Namespace, "Pod.Name", pod.Name)
+
+		//Create pod
 		err = r.client.Create(context.TODO(), pod)
+
 		if err != nil {
+			// Pod creation failed - requeue
 			return reconcile.Result{}, err
 		}
 
@@ -116,13 +131,35 @@ func (r *ReconcileValidator) Reconcile(request reconcile.Request) (reconcile.Res
 		return reconcile.Result{}, err
 	}
 
-	// Pod already exists - don't requeue
-	reqLogger.Info("Skip reconcile: Pod already exists", "Pod.Namespace", found.Namespace, "Pod.Name", found.Name)
+	// Define a new Service object
+	service := newServiceForCR(instance)
+
+	// Set TerradNode instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, service, r.scheme); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Check if this Service already exists
+	foundService := &corev1.Service{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, foundService)
+	if err != nil && errors.IsNotFound(err) {
+		reqLogger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
+		err = r.client.Create(context.TODO(), service)
+		if err != nil {
+			return reconcile.Result{}, err
+		}
+
+		// Pod Service successfully - don't requeue
+		return reconcile.Result{}, nil
+	} else if err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Everything is fine, dont requeue
 	return reconcile.Result{}, nil
 }
 
-// newPodForCR returns a busybox pod with the same name/namespace as the cr
-func newPodForCR(cr *terrav1alpha1.Validator) *corev1.Pod {
+func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
@@ -141,6 +178,20 @@ func newPodForCR(cr *terrav1alpha1.Validator) *corev1.Pod {
 					EnvFrom: cr.EnvFrom,
 				},
 			},
+		},
+	}
+}
+
+func newServiceForCR(cr *terrav1alpha1.TerradNode) *corev1.Service {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+
+	return &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name + "-service",
+			Namespace: cr.Namespace,
+			Labels:    labels,
 		},
 	}
 }
