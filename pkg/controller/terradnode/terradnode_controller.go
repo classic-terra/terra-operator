@@ -6,7 +6,6 @@ import (
 	terrav1alpha1 "github.com/terra-rebels/terra-operator/pkg/apis/terra/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -189,10 +188,12 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		},
 	}
 
-	// 4 CPUs & 32GB memory as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
+	//TODO: Implement logic to allow toggling of request limits
+	// 4 CPUs, 32GB memory & 2TB of storage as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
 	minimumRequestLimits := corev1.ResourceList{
-		corev1.ResourceCPU:    resource.MustParse("4000m"),
-		corev1.ResourceMemory: resource.MustParse("32Gi"),
+		//corev1.ResourceCPU:              resource.MustParse("4000m"),
+		//corev1.ResourceMemory:           resource.MustParse("32Gi"),
+		//corev1.ResourceEphemeralStorage: resource.MustParse("2Ti"),
 	}
 
 	return &corev1.Pod{
