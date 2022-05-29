@@ -6,9 +6,11 @@ import (
 	terrav1alpha1 "github.com/terra-rebels/terra-operator/pkg/apis/terra/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -134,6 +136,9 @@ func (r *ReconcileTerradNode) Reconcile(request reconcile.Request) (reconcile.Re
 	// Define a new Service object
 	service := newServiceForCR(instance)
 
+	// TODO: Figure out if we should have 1 service per pod or one for all pods.
+	service.Spec.Selector = pod.ObjectMeta.Labels
+
 	// Set TerradNode instance as the owner and controller
 	if err := controllerutil.SetControllerReference(instance, service, r.scheme); err != nil {
 		return reconcile.Result{}, err
@@ -164,6 +169,33 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		"app": cr.Name,
 	}
 
+	// Terrad default ports @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
+	ports := []corev1.ContainerPort{
+		{
+			Name:          "LCD",
+			ContainerPort: 1317,
+		},
+		{
+			Name:          "P2P",
+			ContainerPort: 26656,
+		},
+		{
+			Name:          "RPC",
+			ContainerPort: 26657,
+		},
+		{
+			Name:          "Prometheus",
+			ContainerPort: 26660,
+		},
+	}
+
+	// 4 CPUs, 32GB memory & 2TB of storage as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
+	minimumRequestLimits := corev1.ResourceList{
+		corev1.ResourceCPU:     resource.MustParse("4000m"),
+		corev1.ResourceMemory:  resource.MustParse("32GiB"),
+		corev1.ResourceStorage: resource.MustParse("2TiB"),
+	}
+
 	return &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name + "-pod",
@@ -176,6 +208,10 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 					Name:    "terrad",
 					Image:   "terramoney/core-node:v0.5.11-oracle",
 					EnvFrom: cr.EnvFrom,
+					Ports:   ports,
+					Resources: corev1.ResourceRequirements{
+						Requests: minimumRequestLimits,
+					},
 				},
 			},
 		},
@@ -187,11 +223,36 @@ func newServiceForCR(cr *terrav1alpha1.TerradNode) *corev1.Service {
 		"app": cr.Name,
 	}
 
+	// TODO: Figure out how to dynamically generate service ports (managerCount + 1 style logic)
+	const (
+		p2pPort = 99900 + iota
+		rpcPort = 99900 + iota
+		lcdPort = 99900 + iota
+	)
+
+	ports := []corev1.ServicePort{
+		{
+			Port:       p2pPort,
+			TargetPort: intstr.FromString("P2P"),
+		},
+		{
+			Port:       rpcPort,
+			TargetPort: intstr.FromString("RPC"),
+		},
+		{
+			Port:       lcdPort,
+			TargetPort: intstr.FromString("LCD"),
+		},
+	}
+
 	return &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name + "-service",
 			Namespace: cr.Namespace,
 			Labels:    labels,
+		},
+		Spec: corev1.ServiceSpec{
+			Ports: ports,
 		},
 	}
 }
