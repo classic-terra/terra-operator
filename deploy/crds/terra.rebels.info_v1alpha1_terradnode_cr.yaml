@@ -6,7 +6,7 @@ metadata:
 spec:
   isTerra2: false
   dataVolume:
-    name: 
-    volumeSource:
+    name: my-nfs-volume
+    nfs:
       server: HOSTNAME_OF_NFS
       path: PATH_TO_NFS_SHARE
