@@ -254,6 +254,16 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		podSpec.Spec.Volumes = []corev1.Volume{cr.Spec.DataVolume}
 	}
 
+	if len(cr.Spec.PostStartCommand) > 0 {
+		podSpec.Spec.Containers[0].Lifecycle = &corev1.Lifecycle{
+			PostStart: &corev1.Handler{
+				Exec: &corev1.ExecAction{
+					Command: cr.Spec.PostStartCommand,
+				},
+			},
+		}
+	}
+
 	return podSpec
 }
 

@@ -81,6 +81,11 @@ func (in *TerradNodeList) DeepCopyObject() runtime.Object {
 func (in *TerradNodeSpec) DeepCopyInto(out *TerradNodeSpec) {
 	*out = *in
 	in.DataVolume.DeepCopyInto(&out.DataVolume)
+	if in.PostStartCommand != nil {
+		in, out := &in.PostStartCommand, &out.PostStartCommand
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	return
 }
 

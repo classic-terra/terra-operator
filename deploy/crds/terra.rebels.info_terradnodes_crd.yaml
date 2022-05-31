@@ -1231,6 +1231,10 @@ spec:
                   code after modifying this file Add custom validation using kubebuilder
                   tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
                 type: boolean
+              postStartCommand:
+                items:
+                  type: string
+                type: array
             required:
             - isTerra2
             type: object
