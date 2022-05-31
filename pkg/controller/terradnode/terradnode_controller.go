@@ -112,6 +112,7 @@ func (r *ReconcileTerradNode) Reconcile(request reconcile.Request) (reconcile.Re
 		return reconcile.Result{}, err
 	}
 
+	//TODO: ATM the operator expects the provided volume spec to already be created in the cluster. It might be more user friendly to abstract that away, but it comes at the cost of configurability
 	// Check if this Pod already exists
 	foundPod := &corev1.Pod{}
 	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, foundPod)
