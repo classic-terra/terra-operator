@@ -21,7 +21,7 @@ type ValidatorSpec struct {
 	MinimumSelfBondAmount string        `json:"minimumSelfBondAmount"`
 	InitialSelfBondAmount string        `json:"initialSelfBondAmount"`
 	IsTerra2              bool          `json:"isTerra2"`
-	DataVolume            corev1.Volume `json:"dataVolume"`
+	DataVolume            corev1.Volume `json:"dataVolume,omitempty"`
 }
 
 // ValidatorStatus defines the observed state of Validator

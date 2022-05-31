@@ -1239,4 +1239,4 @@ spec:
             type: object
         type: object
     subresources:
-      status: {} 
+      status: {}

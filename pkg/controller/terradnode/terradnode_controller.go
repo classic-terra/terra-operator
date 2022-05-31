@@ -197,7 +197,7 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			corev1.ResourceMemory: resource.MustParse("32Gi"),
 		}
 
-		if &cr.Spec.DataVolume == nil {
+		if (cr.Spec.DataVolume == corev1.Volume{}) {
 			//TODO: Talk with EchelOn about sensible defaults for AWS ESBs
 			if cr.Spec.IsTerra2 {
 				cr.Spec.DataVolume = corev1.Volume{
@@ -250,7 +250,7 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		},
 	}
 
-	if &cr.Spec.DataVolume != nil {
+	if (cr.Spec.DataVolume != corev1.Volume{}) {
 		podSpec.Spec.Volumes = []corev1.Volume{cr.Spec.DataVolume}
 	}
 
