@@ -11,8 +11,9 @@ import (
 type TerradNodeSpec struct {
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
-	IsTerra2   bool `json:"isTerra2"`
-	IsFullNode bool `json:"isFullNode"`
+	IsTerra2   bool          `json:"isTerra2"`
+	IsFullNode bool          `json:"isFullNode"`
+	DataVolume corev1.Volume `json:"dataVolume"`
 }
 
 // TerradNodeStatus defines the observed state of TerradNode

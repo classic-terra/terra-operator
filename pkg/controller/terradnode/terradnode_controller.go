@@ -188,15 +188,38 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		},
 	}
 
-	// 4 CPUs, 32GB memory & 2TB of storage as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
+	// 4 CPUs & 32GB memory as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
 	minimumRequestLimits := corev1.ResourceList{}
 
-	//TODO: Figure out what to do with storage. We could mount it as a volume that uses AWS ESB provisioned via Crossplane.
 	if cr.Spec.IsFullNode {
 		minimumRequestLimits = corev1.ResourceList{
 			corev1.ResourceCPU:    resource.MustParse("4000m"),
 			corev1.ResourceMemory: resource.MustParse("32Gi"),
-			//corev1.ResourceEphemeralStorage: resource.MustParse("2Ti"),
+		}
+
+		if &cr.Spec.DataVolume == nil {
+			//TODO: Talk with EchelOn about sensible defaults for AWS ESBs
+			if cr.Spec.IsTerra2 {
+				cr.Spec.DataVolume = corev1.Volume{
+					Name: "phoenix-1",
+					VolumeSource: corev1.VolumeSource{
+						AWSElasticBlockStore: &corev1.AWSElasticBlockStoreVolumeSource{
+							VolumeID: "MY_VOLUME_ID",
+							FSType:   "ext4",
+						},
+					},
+				}
+			} else {
+				cr.Spec.DataVolume = corev1.Volume{
+					Name: "columbus-5",
+					VolumeSource: corev1.VolumeSource{
+						AWSElasticBlockStore: &corev1.AWSElasticBlockStoreVolumeSource{
+							VolumeID: "MY_VOLUME_ID",
+							FSType:   "ext4",
+						},
+					},
+				}
+			}
 		}
 	}
 
@@ -206,7 +229,7 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		podImage = "terramoney/core"
 	}
 
-	return &corev1.Pod{
+	podSpec := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name + "-pod",
 			Namespace: cr.Namespace,
@@ -226,6 +249,12 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			},
 		},
 	}
+
+	if &cr.Spec.DataVolume != nil {
+		podSpec.Spec.Volumes = []corev1.Volume{cr.Spec.DataVolume}
+	}
+
+	return podSpec
 }
 
 func newServiceForCR(cr *terrav1alpha1.TerradNode) *corev1.Service {

@@ -5,7 +5,6 @@ metadata:
   namespace: terra
 spec:
   isTerra2: false
-  pubKey: VALIDATOR_PUB_KEY
   address: VALIDATOR_TERRAVALOPER_ADDRESS
   name: VALIDATOR_MONIKER
   website: VALIDATOR_WEBSITE

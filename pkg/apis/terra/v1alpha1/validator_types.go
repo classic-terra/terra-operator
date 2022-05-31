@@ -11,17 +11,17 @@ import (
 type ValidatorSpec struct {
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
-	PubKey                string `json:"pubKey"`
-	Address               string `json:"address"`
-	Name                  string `json:"name"`
-	Website               string `json:"website,omitempty"`
-	Description           string `json:"description,omitempty"`
-	InitialCommissionRate string `json:"initialCommissionRate"`
-	MaximumCommission     string `json:"maximumCommission"`
-	CommissionChangeRate  string `json:"commissionChangeRate"`
-	MinimumSelfBondAmount string `json:"minimumSelfBondAmount"`
-	InitialSelfBondAmount string `json:"initialSelfBondAmount"`
-	IsTerra2              bool   `json:"isTerra2"`
+	Address               string        `json:"address"`
+	Name                  string        `json:"name"`
+	Website               string        `json:"website,omitempty"`
+	Description           string        `json:"description,omitempty"`
+	InitialCommissionRate string        `json:"initialCommissionRate"`
+	MaximumCommission     string        `json:"maximumCommission"`
+	CommissionChangeRate  string        `json:"commissionChangeRate"`
+	MinimumSelfBondAmount string        `json:"minimumSelfBondAmount"`
+	InitialSelfBondAmount string        `json:"initialSelfBondAmount"`
+	IsTerra2              bool          `json:"isTerra2"`
+	DataVolume            corev1.Volume `json:"dataVolume"`
 }
 
 // ValidatorStatus defines the observed state of Validator

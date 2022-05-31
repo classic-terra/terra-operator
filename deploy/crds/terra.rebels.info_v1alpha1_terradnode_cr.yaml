@@ -5,4 +5,3 @@ metadata:
   namespace: terra
 spec:
   isTerra2: false
-  isFullNode: false
