@@ -196,31 +196,6 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			corev1.ResourceCPU:    resource.MustParse("4000m"),
 			corev1.ResourceMemory: resource.MustParse("32Gi"),
 		}
-
-		if (cr.Spec.DataVolume == corev1.Volume{}) {
-			//TODO: Talk with EchelOn about sensible defaults for AWS ESBs
-			if cr.Spec.IsTerra2 {
-				cr.Spec.DataVolume = corev1.Volume{
-					Name: "phoenix-1",
-					VolumeSource: corev1.VolumeSource{
-						AWSElasticBlockStore: &corev1.AWSElasticBlockStoreVolumeSource{
-							VolumeID: "MY_VOLUME_ID",
-							FSType:   "ext4",
-						},
-					},
-				}
-			} else {
-				cr.Spec.DataVolume = corev1.Volume{
-					Name: "columbus-5",
-					VolumeSource: corev1.VolumeSource{
-						AWSElasticBlockStore: &corev1.AWSElasticBlockStoreVolumeSource{
-							VolumeID: "MY_VOLUME_ID",
-							FSType:   "ext4",
-						},
-					},
-				}
-			}
-		}
 	}
 
 	podImage := "toban/classic-core-node"
