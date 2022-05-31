@@ -5,9 +5,12 @@ import (
 
 	terrav1alpha1 "github.com/terra-rebels/terra-operator/pkg/apis/terra/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -38,6 +41,16 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 
 	// Watch for changes to primary resource Validator
 	err = c.Watch(&source.Kind{Type: &terrav1alpha1.Validator{}}, &handler.EnqueueRequestForObject{})
+	if err != nil {
+		return err
+	}
+
+	// Watch for changes to secondary resources and requeue the owner TerradNode
+	err = c.Watch(&source.Kind{Type: &terrav1alpha1.TerradNode{}}, &handler.EnqueueRequestForOwner{
+		IsController: true,
+		OwnerType:    &terrav1alpha1.TerradNode{},
+	})
+
 	if err != nil {
 		return err
 	}
@@ -79,7 +92,56 @@ func (r *ReconcileValidator) Reconcile(request reconcile.Request) (reconcile.Res
 		return reconcile.Result{}, err
 	}
 
-	//TODO: Implement validator reconcile logic
+	// Define a new TerradNode object
+	terrad := newTerradNodeForCR(instance)
+
+	// Set TerradNode instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, terrad, r.scheme); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	// Check if this TerradNode already exists
+	foundTerrad := &terrav1alpha1.TerradNode{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: terrad.Name, Namespace: terrad.Namespace}, foundTerrad)
+
+	if err != nil && errors.IsNotFound(err) {
+		reqLogger.Info("Creating a new TerradNode", "TerradNode.Namespace", terrad.Namespace, "TerradNode.Name", terrad.Name)
+
+		//TerradNode
+		err = r.client.Create(context.TODO(), terrad)
+
+		if err != nil {
+			// TerradNode creation failed - requeue
+			return reconcile.Result{}, err
+		}
+
+		// TerradNode created successfully - don't requeue
+		return reconcile.Result{}, nil
+	} else if err != nil {
+		return reconcile.Result{}, err
+	}
 
 	return reconcile.Result{}, nil
+}
+
+func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+
+	//TODO: Implement support for wiring postStart lifecycle event into TerradNode container to allow running the terrad commands that will fetch the pubkey and kickstart the validator.
+	terrad := &terrav1alpha1.TerradNode{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name + "-terradnode",
+			Namespace: cr.Namespace,
+			Labels:    labels,
+		},
+		Spec: terrav1alpha1.TerradNodeSpec{
+			IsTerra2:   cr.Spec.IsTerra2,
+			IsFullNode: true,
+			DataVolume: cr.Spec.DataVolume,
+		},
+	}
+
+	return terrad
 }
