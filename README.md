@@ -42,7 +42,15 @@ Congratulations you have now installed the Terra-Operator on your k8s cluster.
 
 ### TODO: Section on creating a TerradNode custom resource
 
+- How to install CRD
+- How to install CR (incl. configuration options)
+- How to add a shared volume
+
 ### TODO: Section on creating a Validator custom resource
+
+- How to install CRD
+- How to install CR (incl. configuration options)
+- How to add a shared volume
 
 ## Want to help make our dcoumentation better?
  * Want to **log an issue**? Feel free to visit our [GitHub site](https://github.com/terra-rebels/terra-operator/issues).
