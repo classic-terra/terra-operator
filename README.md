@@ -12,7 +12,7 @@ These instructions will help you setup the Terra-Operator on your k8s cluster. I
 * [MiniKube](https://minikube.sigs.k8s.io/docs/start/)
 
 ### Installing Terra-Operator
-In order to install the Terra-Operator the above prerequisites must be meet by the host machine and if you wish to run a full node (e.i a Validator) the machine must meet the following requirements: https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html. Once you have verified your system meets the required guidelines the process of getting the Terra-Operator installed is described below.
+In order to install the Terra-Operator the above prerequisites must be meet by the host machine and if you wish to run a full node (e.i a Validator) the machine must meet the following requirements: https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html. Once you have verified your system meets the minimum requirements the process of getting the Terra-Operator installed is fairly simple. :)
 
 #### Cloning Terra-Operator repo
 Clone the Terra-Operator from GitHub using the following command:
