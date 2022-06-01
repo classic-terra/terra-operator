@@ -14,8 +14,8 @@ spec:
   minimumSelfBondAmount: "1"
   initialSelfBondAmount: "1"
   isTerra2: false
-  dataVolume:
-    name: my-nfs-volume
-    nfs:
-      server: HOSTNAME_OF_NFS
-      path: PATH_TO_NFS_SHARE
+  # dataVolume:
+  #   name: my-nfs-volume
+  #   nfs:
+  #     server: HOSTNAME_OF_NFS
+  #     path: PATH_TO_NFS_SHARE
