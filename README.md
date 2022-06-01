@@ -12,28 +12,6 @@ These instructions will help you setup the Terra-operator on your k8s cluster. I
 * [MiniKube](https://minikube.sigs.k8s.io/docs/start/) (or any other k8s cluster)
 
 
-
-### 1. Create a kata directory
-First we setup a directory for our exercise files. It's pretty straight forward:
-
-```
-mkdir kata1
-cd kata1
-```
-
-### 2. Create a new Web API .NET Core project
-Then we create some boilerplate code to test ApplicationInsights:
-
-```
-dotnet new webapi
-```
-
-Just to explain: <br/>
-`dotnet` - is the dotnet CLI <br/>
-`new` - instructs the dotnet CLI to create a new project in the current directory.<br/>
-`webapi` - tells the dotnet CLI which project template to use
-
-
 ## Want to help make our dcoumentation better?
  * Want to **log an issue**? Feel free to visit our [GitHub site](https://github.com/terra-rebels/terra-operator/issues).
  
