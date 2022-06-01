@@ -12,7 +12,7 @@ spec:
   maximumCommission: "1.00"
   commissionChangeRate: "0.01"
   minimumSelfBondAmount: "1"
-  initialSelfBondAmount: "1"
+  initialSelfBondAmount: "5000000"
   isTerra2: false
   # dataVolume:
   #   name: my-nfs-volume

@@ -2,6 +2,7 @@ package validator
 
 import (
 	"context"
+	"fmt"
 
 	terrav1alpha1 "github.com/terra-rebels/terra-operator/pkg/apis/terra/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -129,7 +130,25 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 		"app": cr.Name,
 	}
 
-	//TODO: Implement support for wiring postStart lifecycle event into TerradNode container to allow running the terrad commands that will fetch the pubkey and kickstart the validator.
+	postStartCommand := fmt.Sprintf(`terrad tx staking create-validator 
+		--amount=%s
+		--pubkey=$(terrad tendermint show-validator) 
+		--moniker="%s" 
+		--chain-id=columbus-5
+		--from=tmp
+		--commission-rate="%s" 
+		--commission-max-rate="%s" 
+		--commission-max-change-rate="%s" 
+		--min-self-delegation="%s"
+		--gas auto
+		--node tcp://127.0.0.1:26647`,
+		cr.Spec.InitialSelfBondAmount,
+		cr.Spec.Name,
+		cr.Spec.InitialCommissionRate,
+		cr.Spec.MaximumCommission,
+		cr.Spec.CommissionChangeRate,
+		cr.Spec.MinimumSelfBondAmount)
+
 	terrad := &terrav1alpha1.TerradNode{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name + "-terradnode",
@@ -140,6 +159,9 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 			IsTerra2:   cr.Spec.IsTerra2,
 			IsFullNode: true,
 			DataVolume: cr.Spec.DataVolume,
+			PostStartCommand: []string{
+				postStartCommand,
+			},
 		},
 	}
 
