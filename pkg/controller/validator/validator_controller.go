@@ -130,20 +130,28 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 		"app": cr.Name,
 	}
 
+	chainId := "columbus-5"
+
+	if cr.Spec.IsTerra2 {
+		chainId = "phoenix-1"
+	}
+
 	postStartCommand := fmt.Sprintf(`terrad tx staking create-validator 
-		--amount=%s
-		--pubkey=$(terrad tendermint show-validator) 
+		--pubkey=$(terrad tendermint show-validator) 		
+		--chain-id=%s
 		--moniker="%s" 
-		--chain-id=columbus-5
-		--from=tmp
+		--from=%s
+		--amount=%s
 		--commission-rate="%s" 
 		--commission-max-rate="%s" 
 		--commission-max-change-rate="%s" 
 		--min-self-delegation="%s"
 		--gas auto
 		--node tcp://127.0.0.1:26647`,
-		cr.Spec.InitialSelfBondAmount,
+		chainId,
 		cr.Spec.Name,
+		cr.Spec.FromKeyName,
+		cr.Spec.InitialSelfBondAmount,
 		cr.Spec.InitialCommissionRate,
 		cr.Spec.MaximumCommission,
 		cr.Spec.CommissionChangeRate,
