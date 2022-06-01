@@ -229,7 +229,8 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		podSpec.Spec.Volumes = []corev1.Volume{cr.Spec.DataVolume}
 		podSpec.Spec.Containers[0].VolumeMounts = []corev1.VolumeMount{
 			{
-				Name:      cr.Spec.DataVolume.Name,
+				Name: cr.Spec.DataVolume.Name,
+				//Data folder location for terrad: https://docs.terra.money/docs/full-node/run-a-full-terra-node/sync.html
 				MountPath: "~/.terra/data",
 			},
 		}
