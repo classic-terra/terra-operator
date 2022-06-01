@@ -36,7 +36,7 @@ Verify that Terra-Operator is running using the following command:
 minikube kubectl get Deployment terra-operator -n terra
 ```
 
-Which should yield something like this: `terra-operator   1/1     1            1           16m`
+This should yield something like this: `terra-operator   1/1     1            1           16m`
 
 Congratulations you have now installed the Terra-Operator on your k8s cluster.
 
