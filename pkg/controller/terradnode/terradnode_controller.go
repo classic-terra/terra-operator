@@ -227,6 +227,12 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 
 	if (cr.Spec.DataVolume != corev1.Volume{}) {
 		podSpec.Spec.Volumes = []corev1.Volume{cr.Spec.DataVolume}
+		podSpec.Spec.Containers[0].VolumeMounts = []corev1.VolumeMount{
+			{
+				Name:      cr.Spec.DataVolume.Name,
+				MountPath: "~/.terra/data",
+			},
+		}
 	}
 
 	if len(cr.Spec.PostStartCommand) > 0 {
