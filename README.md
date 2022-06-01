@@ -1,7 +1,7 @@
 Terra-Operator (v1)
 ======================================
 
-The Terra-Operator is a community driven project focused on creating a Kubernetes native operator that will simplify the process of deploying TerradNodes and Validators to via Kubectl to any k8s cluster. The idea is to make it alot simpler for users to easily spin up a cluster with a few commands on any k8s resources available to them thus allowing the hashing power of our networks to grow (Note: It supports both Classic and V2).
+The Terra-Operator is a community driven project focused on creating a Kubernetes native operator that will simplify the process of deploying TerradNodes and Validators via Kubectl to any k8s cluster. The idea is to make it alot simpler for users to easily spin up a cluster with a few commands on any k8s resources available to them thus allowing the hashing power of our networks to grow (Note: It supports both Classic and V2).
 
 ## Getting started
 These instructions will help you setup the Terra-Operator on your k8s cluster. If you find yourself in a situation where one of more tools might not be working please reach out to us for assistance on how to proceed, post an [issue in our repository](https://github.com/terra-rebels/terra-operator/issues), fix it yourself & update the code via a [pull request](https://github.com/terra-rebels/terra-operator/pulls) or reach out to us on [Discord](https://discord.gg/zW43ghuMpa).
