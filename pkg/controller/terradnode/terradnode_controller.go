@@ -198,12 +198,6 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		}
 	}
 
-	podImage := "toban/classic-core-node"
-
-	if cr.Spec.IsTerra2 {
-		podImage = "terramoney/core"
-	}
-
 	podSpec := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name + "-pod",
@@ -214,7 +208,7 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			Containers: []corev1.Container{
 				{
 					Name:    "terrad",
-					Image:   podImage,
+					Image:   cr.Spec.NodeImage,
 					EnvFrom: cr.EnvFrom,
 					Ports:   ports,
 					Resources: corev1.ResourceRequirements{

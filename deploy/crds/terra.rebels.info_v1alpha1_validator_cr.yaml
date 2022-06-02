@@ -11,7 +11,8 @@ spec:
   commissionChangeRate: "0.01"
   minimumSelfBondAmount: "1"
   initialSelfBondAmount: "5000000"
-  isTerra2: false
+  chainId: columbus-5
+  nodeImage: toban/classic-core-node
   # dataVolume:
   #   name: my-nfs-volume
   #   nfs:

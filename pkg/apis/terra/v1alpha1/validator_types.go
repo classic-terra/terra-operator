@@ -20,7 +20,8 @@ type ValidatorSpec struct {
 	CommissionChangeRate  string        `json:"commissionChangeRate"`
 	MinimumSelfBondAmount string        `json:"minimumSelfBondAmount"`
 	InitialSelfBondAmount string        `json:"initialSelfBondAmount"`
-	IsTerra2              bool          `json:"isTerra2"`
+	ChainId               string        `json:"chainId"`
+	NodeImage             string        `json:"nodeImage"`
 	DataVolume            corev1.Volume `json:"dataVolume,omitempty"`
 }
 

@@ -130,12 +130,6 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 		"app": cr.Name,
 	}
 
-	chainId := "columbus-5"
-
-	if cr.Spec.IsTerra2 {
-		chainId = "phoenix-1"
-	}
-
 	//TODO: We might need to expand this is we want the validator wallet to be auto-configured by the operator. We could add a start_validator.sh script the the classic-core image and simply call that with spec as args.
 	postStartCommand := fmt.Sprintf(`terrad tx staking create-validator 
 		--pubkey=$(terrad tendermint show-validator) 		
@@ -149,7 +143,7 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 		--min-self-delegation="%s"
 		--gas auto
 		--node tcp://127.0.0.1:26647`,
-		chainId,
+		cr.Spec.ChainId,
 		cr.Spec.Name,
 		cr.Spec.FromKeyName,
 		cr.Spec.InitialSelfBondAmount,
@@ -165,7 +159,7 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 			Labels:    labels,
 		},
 		Spec: terrav1alpha1.TerradNodeSpec{
-			IsTerra2:   cr.Spec.IsTerra2,
+			NodeImage:  cr.Spec.NodeImage,
 			IsFullNode: true,
 			DataVolume: cr.Spec.DataVolume,
 			PostStartCommand: []string{

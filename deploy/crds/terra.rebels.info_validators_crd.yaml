@@ -14,7 +14,7 @@ spec:
   - name: v1alpha1
     served: true
     storage: true
-    schema:
+    schema:      
       openAPIV3Schema:
         description: Validator is the Schema for the validators API
         properties:
@@ -65,10 +65,7 @@ spec:
           spec:
             description: ValidatorSpec defines the desired state of Validator
             properties:
-              fromKeyName:
-                description: 'Important: Run "operator-sdk generate k8s" to regenerate
-                  code after modifying this file Add custom validation using kubebuilder
-                  tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
+              chainId:
                 type: string
               commissionChangeRate:
                 type: string
@@ -1233,33 +1230,39 @@ spec:
                 type: object
               description:
                 type: string
+              fromKeyName:
+                description: 'Important: Run "operator-sdk generate k8s" to regenerate
+                  code after modifying this file Add custom validation using kubebuilder
+                  tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
+                type: string
               initialCommissionRate:
                 type: string
               initialSelfBondAmount:
                 type: string
-              isTerra2:
-                type: boolean
               maximumCommission:
                 type: string
               minimumSelfBondAmount:
                 type: string
               name:
                 type: string
+              nodeImage:
+                type: string
               website:
                 type: string
             required:
-            - fromKeyName
+            - chainId
             - commissionChangeRate
+            - fromKeyName
             - initialCommissionRate
             - initialSelfBondAmount
-            - isTerra2
             - maximumCommission
             - minimumSelfBondAmount
             - name
+            - nodeImage
             type: object
           status:
             description: ValidatorStatus defines the observed state of Validator
             type: object
         type: object
     subresources:
-      status: {}  
+      status: {}

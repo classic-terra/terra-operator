@@ -4,7 +4,7 @@ metadata:
   name: example-terradnode
   namespace: terra
 spec:
-  isTerra2: false
+  nodeImage: toban/classic-core-node
   # dataVolume:
   #   name: my-nfs-volume
   #   nfs:
