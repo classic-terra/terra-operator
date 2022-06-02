@@ -5,12 +5,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // TerradNodeSpec defines the desired state of TerradNode
 type TerradNodeSpec struct {
-	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
 	NodeImage        string        `json:"nodeImage"`
 	IsFullNode       bool          `json:"isFullNode,omitempty"`
 	DataVolume       corev1.Volume `json:"dataVolume,omitempty"`
@@ -19,8 +15,6 @@ type TerradNodeSpec struct {
 
 // TerradNodeStatus defines the observed state of TerradNode
 type TerradNodeStatus struct {
-	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

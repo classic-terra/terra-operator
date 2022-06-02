@@ -5,12 +5,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
-
 // ValidatorSpec defines the desired state of Validator
 type ValidatorSpec struct {
-	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
 	FromKeyName           string        `json:"fromKeyName"`
 	Name                  string        `json:"name"`
 	Website               string        `json:"website,omitempty"`
@@ -27,8 +23,6 @@ type ValidatorSpec struct {
 
 // ValidatorStatus defines the observed state of Validator
 type ValidatorStatus struct {
-	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
-	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
