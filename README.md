@@ -58,7 +58,7 @@ Verify that kubectl prints the following message: `customresourcedefinition.apie
 From the root of the Terra-Operator repo run the following command:
 
 ```
-minikube kubectl apply -f ./deploy/crds/terra.rebels.info_v1alpha1_terradnode_cr.yaml
+minikube kubectl apply -f ./deploy/crds/examples/terra.rebels.info_v1alpha1_terradnode_cr.yaml
 ```
 
 Verify that kubectl prints the following message: `terradnode.terra.rebels.info/example-terradnode created`
@@ -96,7 +96,7 @@ Verify that kubectl prints the following message: `customresourcedefinition.apie
 From the root of the Terra-Operator repo run the following command:
 
 ```
-minikube kubectl apply -f ./deploy/crds/terra.rebels.info_v1alpha1_validator_cr.yaml
+minikube kubectl apply -f ./deploy/crds/examples/terra.rebels.info_v1alpha1_validator_cr.yaml
 ```
 
 Verify that kubectl prints the following message: `validator.terra.rebels.info/example-validator created`
