@@ -97,12 +97,6 @@ TODO
 #### How to mount a volume containing the target Terra chain on a Validator
 TODO
 
-### TODO: Section on creating a Validator custom resource
-
-- How to install CRD
-- How to install CR (incl. configuration options)
-- How to add a shared volume
-
 ## Want to help make our dcoumentation better?
  * Want to **log an issue**? Feel free to visit our [GitHub site](https://github.com/terra-rebels/terra-operator/issues).
  
