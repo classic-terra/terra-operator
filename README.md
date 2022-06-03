@@ -63,7 +63,8 @@ minikube kubectl apply -f ./deploy/crds/terra.rebels.info_v1alpha1_terradnode_cr
 
 Verify that kubectl prints the following message: `terradnode.terra.rebels.info/example-terradnode created`
 
-##### TerradNodeSpec
+##### TerradNodeSpec configuration options
+The `terra.rebels.info_v1alpha1_terradnode_cr.yaml` example supports the following configuration options:
 
 ```
 spec:
@@ -98,7 +99,8 @@ minikube kubectl apply -f ./deploy/crds/terra.rebels.info_v1alpha1_validator_cr.
 
 Verify that kubectl prints the following message: `validator.terra.rebels.info/example-validator created`
 
-##### ValidatorSpec
+##### ValidatorSpec configuration options
+The `terra.rebels.info_v1alpha1_validator_cr.yaml` example supports the following configuration options:
 
 ```
   chainId: validator-chain-id (required)
