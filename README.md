@@ -63,12 +63,15 @@ minikube kubectl apply -f ./deploy/crds/terra.rebels.info_v1alpha1_terradnode_cr
 
 Verify that kubectl prints the following message: `terradnode.terra.rebels.info/example-terradnode created`
 
-##### TerradNode CRD Configuration
-TODO
+##### TerradNodeSpec
 
-#### How to mount a volume containing the target Terra chain on a TerradNode
-TODO
-
+spec:
+  nodeImage: toban/classic-core-node
+  dataVolume:
+    name: my-nfs-share
+    nfs:
+      server: my.nfs.share
+      path: /my-nfs-share/
 
 ### Validator CRD (v1alpha)
 The Validator CRD is a custom resource definition managed by the Terra-Operator that mounts a Validator on top of a TerradNode resource and runs it in a bonded mode using the configured Application Oracle Key (create-validator --from arg). A Validators responsibility is to spin up a `terrad` daemon running as a `full-node`, mount it on a volume containing the desired blockchain snapshot (can be found at https://quicksync.io/networks/terra.html) and bootstraps a `PostStartupScript` command on the TerradNode ContainerSpec that executes the required commands to succesful launch the Terra Validator with the desired ValidatorSpec.
@@ -91,11 +94,21 @@ minikube kubectl apply -f ./deploy/crds/terra.rebels.info_v1alpha1_validator_cr.
 
 Verify that kubectl prints the following message: `validator.terra.rebels.info/example-validator created`
 
-##### Validator CRD Configuration
-TODO
-
-#### How to mount a volume containing the target Terra chain on a Validator
-TODO
+##### ValidatorSpec
+  fromKeyName: application-oracle-key-name
+  name: validator-moniker
+  initialCommissionRate: validator-commission-rate
+  maximumCommission: validator-commission-max-rate
+  commissionChangeRate: validator-commission-max-change-rate
+  minimumSelfBondAmount: validator-min-self-delegation
+  initialSelfBondAmount: validator-amount
+  chainId: validator-chain-id
+  nodeImage: validator-node-image
+  dataVolume:
+    name: my-nfs-share
+    nfs:
+      server: my.nfs.share
+      path: /my-nfs-share/
 
 ## Want to help make our documentation better?
  * Want to **log an issue**? Feel free to visit our [GitHub site](https://github.com/terra-rebels/terra-operator/issues).
