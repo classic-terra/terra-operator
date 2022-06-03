@@ -40,11 +40,62 @@ This should yield something like this: `terra-operator   1/1     1            1 
 
 Congratulations you have now installed the Terra-Operator on your k8s cluster.
 
-### TODO: Section on creating a TerradNode custom resource
+### TerradNode CRD (v1alpha)
+The TerradNode CRD is a custom resource definition managed by the Terra-Operator which provides the base layer for any terra node running on Kubernetes. Its job is simply to spin up a `terrad` daemon running in a initialized state with Tendermint consensus (BPOS) and networking components to work with the target `ChainId` using the desired `NodeImage`.
 
-- How to install CRD
-- How to install CR (incl. configuration options)
-- How to add a shared volume
+The TerradNode consists of a `pod` running the `NodeImage` vs the target `ChainId` with the following containerPorts exposed: `1317` (LCD), `26656` (P2P), `26657` (RPC) & `26660` (Prometheus). Furthermore it kick-starts the `terrad start` command to ensure the node is initialized and running either as a `light-node` or a `full-node` depending on the `IsFullNode` value of the TerradNodeSpec. It also creates a `service` which exposes the LCD, RPC & P2P containerPorts to clients outside your Kubernetes cluster (e.g. `terra-station`).
+
+#### How to install TerradNode CRD
+From the root of the Terra-Operator repo run the following command:
+
+```
+minikube kubectl apply -f ./deploy/crds/terra.rebels.info_terradnodes_crd.yaml
+```
+
+Verify that kubectl prints the following message: `customresourcedefinition.apiextensions.k8s.io/terradnodes.terra.rebels.info created`
+
+#### How to create an TerradNode instance
+From the root of the Terra-Operator repo run the following command:
+
+```
+minikube kubectl apply -f ./deploy/crds/terra.rebels.info_v1alpha1_terradnode_cr.yaml
+```
+
+Verify that kubectl prints the following message: `terradnode.terra.rebels.info/example-terradnode created`
+
+##### TerradNode CRD Configuration
+TODO
+
+#### How to mount a volume containing the target Terra chain on a TerradNode
+TODO
+
+
+### Validator CRD (v1alpha)
+The Validator CRD is a custom resource definition managed by the Terra-Operator that mounts a Validator on top of a TerradNode resource and runs it as in a bonded mode using the configured Application Oracle Key (create-validator --from arg). A Validators is to spin up a `terrad` daemon running as a `full-node`, mount it on a volume containing the desired blockchain snapshot (can be found at https://quicksync.io/networks/terra.html) and bootstraps a `PostStartupScript` command on the TerradNode ContainerSpec that executes the required commands to succesful launch a Terra Validator.
+
+#### How to install Validator CRD
+From the root of the Terra-Operator repo run the following command:
+
+```
+minikube kubectl apply -f ./deploy/crds/terra.rebels.info_validators_crd.yaml
+```
+
+Verify that kubectl prints the following message: `customresourcedefinition.apiextensions.k8s.io/validators.terra.rebels.info created`
+
+#### How to create an Validator instance
+From the root of the Terra-Operator repo run the following command:
+
+```
+minikube kubectl apply -f ./deploy/crds/terra.rebels.info_v1alpha1_validator_cr.yaml
+```
+
+Verify that kubectl prints the following message: `validator.terra.rebels.info/example-validator created`
+
+##### Validator CRD Configuration
+TODO
+
+#### How to mount a volume containing the target Terra chain on a Validator
+TODO
 
 ### TODO: Section on creating a Validator custom resource
 
