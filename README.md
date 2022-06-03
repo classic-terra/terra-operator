@@ -68,14 +68,14 @@ The `terra.rebels.info_v1alpha1_terradnode_cr.yaml` example supports the followi
 
 ```
 spec:
-  nodeImage: terradnode-container-image (required)
-  postStartCommand: terradnode-post-start-command (optional)
-  isFullNode: terradnode-light-or-full (optional)
+  nodeImage: terradnode-container-image (required - string)
+  postStartCommand: terradnode-post-start-command (optional - string)
+  isFullNode: terradnode-light-or-full (optional - bool)
   dataVolume: (optional)
-    name: my-nfs-share (required)
+    name: my-nfs-share (required - string)
     nfs:
-      server: my.nfs.share (required)
-      path: /my-nfs-share/ (required)
+      server: my.nfs.share (required - string)
+      path: /my-nfs-share/ (required - string)
 ```
 
 ### Validator CRD (v1alpha)
@@ -103,22 +103,22 @@ Verify that kubectl prints the following message: `validator.terra.rebels.info/e
 The `terra.rebels.info_v1alpha1_validator_cr.yaml` example supports the following configuration options:
 
 ```
-  chainId: validator-chain-id (required)
-  nodeImage: validator-node-image (required)
-  name: validator-moniker (required)
-  description: validator-description (optional)
-  website: validator-website (optional)
-  fromKeyName: validator-application-oracle-key-name (required)
-  minimumSelfBondAmount: validator-min-self-delegation (required)
-  initialSelfBondAmount: validator-amount (required)
-  initialCommissionRate: validator-commission-rate (required)
-  maximumCommission: validator-commission-max-rate (required)
-  commissionChangeRate: validator-commission-max-change-rate (required)
+  chainId: validator-chain-id (required - string)
+  nodeImage: validator-node-image (required - string)
+  name: validator-moniker (required - string)
+  description: validator-description (optional - string)
+  website: validator-website (optional - string)
+  fromKeyName: validator-application-oracle-key-name (required - string)
+  minimumSelfBondAmount: validator-min-self-delegation (required - string)
+  initialSelfBondAmount: validator-amount (required - string)
+  initialCommissionRate: validator-commission-rate (required - string)
+  maximumCommission: validator-commission-max-rate (required - string)
+  commissionChangeRate: validator-commission-max-change-rate (required - string)
   dataVolume: (optional)
-    name: my-nfs-share (required)
+    name: my-nfs-share (required - string)
     nfs:
-      server: my.nfs.share (required)
-      path: /my-nfs-share/ (required)
+      server: my.nfs.share (required - string)
+      path: /my-nfs-share/ (required - string)
 ```
 
 ## Want to help make our documentation better?
