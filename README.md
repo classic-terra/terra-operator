@@ -21,7 +21,7 @@ Clone the Terra-Operator from GitHub using the following command:
 git clone https://github.com/terra-rebels/terra-operator.git
 ```
 
-#### Apply Terra-operator yaml
+#### Apply Terra-Operator yaml
 Navigate to the deploy directory and apply the yaml files using the following commands:
 
 ```
@@ -41,9 +41,9 @@ This should yield something like this: `terra-operator   1/1     1            1 
 Congratulations you have now installed the Terra-Operator on your k8s cluster.
 
 ### TerradNode CRD (v1alpha)
-The TerradNode CRD is a custom resource definition managed by the Terra-Operator which provides the base layer for any terra node running on Kubernetes. Its job is simply to spin up a `terrad` daemon running in a initialized state with Tendermint consensus (BPOS) and networking components to work with the target `ChainId` using the desired `NodeImage`.
+The TerradNode CRD is a custom resource definition managed by the Terra-Operator which provides the base layer for any terra node running on Kubernetes. Its job is simply to spin up a `terrad` daemon running in a initialized state with Tendermint consensus (BPOS) and networking components targeting the `ChainId` using the desired `NodeImage` client.
 
-The TerradNode consists of a `pod` running the `NodeImage` vs the target `ChainId` with the following containerPorts exposed: `1317` (LCD), `26656` (P2P), `26657` (RPC) & `26660` (Prometheus). Furthermore it kick-starts the `terrad start` command to ensure the node is initialized and running either as a `light-node` or a `full-node` depending on the `IsFullNode` value of the TerradNodeSpec. It also creates a `service` which exposes the LCD, RPC & P2P containerPorts to clients outside your Kubernetes cluster (e.g. `terra-station`).
+The TerradNode consists of a `pod` running the `NodeImage` client vs a desired version of the Terra blockchain identified by the `ChainId` with the following containerPorts exposed: `1317` (LCD), `26656` (P2P), `26657` (RPC) & `26660` (Prometheus). Furthermore it kick-starts the `terrad start` command to ensure the node is initialized and running either as a `light-node` or a `full-node` depending on the `IsFullNode` value of the TerradNodeSpec. It also creates a `service` which exposes the LCD, RPC & P2P containerPorts to clients outside your Kubernetes cluster (e.g. `terra-station`).
 
 #### How to install TerradNode CRD
 From the root of the Terra-Operator repo run the following command:
@@ -71,7 +71,7 @@ TODO
 
 
 ### Validator CRD (v1alpha)
-The Validator CRD is a custom resource definition managed by the Terra-Operator that mounts a Validator on top of a TerradNode resource and runs it as in a bonded mode using the configured Application Oracle Key (create-validator --from arg). A Validators is to spin up a `terrad` daemon running as a `full-node`, mount it on a volume containing the desired blockchain snapshot (can be found at https://quicksync.io/networks/terra.html) and bootstraps a `PostStartupScript` command on the TerradNode ContainerSpec that executes the required commands to succesful launch a Terra Validator.
+The Validator CRD is a custom resource definition managed by the Terra-Operator that mounts a Validator on top of a TerradNode resource and runs it in a bonded mode using the configured Application Oracle Key (create-validator --from arg). A Validators responsibility is to spin up a `terrad` daemon running as a `full-node`, mount it on a volume containing the desired blockchain snapshot (can be found at https://quicksync.io/networks/terra.html) and bootstraps a `PostStartupScript` command on the TerradNode ContainerSpec that executes the required commands to succesful launch the Terra Validator with the desired ValidatorSpec.
 
 #### How to install Validator CRD
 From the root of the Terra-Operator repo run the following command:
