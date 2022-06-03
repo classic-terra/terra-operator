@@ -65,13 +65,17 @@ Verify that kubectl prints the following message: `terradnode.terra.rebels.info/
 
 ##### TerradNodeSpec
 
+```
 spec:
-  nodeImage: toban/classic-core-node
-  dataVolume:
-    name: my-nfs-share
+  nodeImage: terradnode-container-image (required)
+  postStartCommand: terradnode-post-start-command (optional)
+  isFullNode: terradnode-light-or-full (optional)
+  dataVolume: (optional)
+    name: my-nfs-share (required)
     nfs:
-      server: my.nfs.share
-      path: /my-nfs-share/
+      server: my.nfs.share (required)
+      path: /my-nfs-share/ (required)
+```
 
 ### Validator CRD (v1alpha)
 The Validator CRD is a custom resource definition managed by the Terra-Operator that mounts a Validator on top of a TerradNode resource and runs it in a bonded mode using the configured Application Oracle Key (create-validator --from arg). A Validators responsibility is to spin up a `terrad` daemon running as a `full-node`, mount it on a volume containing the desired blockchain snapshot (can be found at https://quicksync.io/networks/terra.html) and bootstraps a `PostStartupScript` command on the TerradNode ContainerSpec that executes the required commands to succesful launch the Terra Validator with the desired ValidatorSpec.
@@ -95,20 +99,25 @@ minikube kubectl apply -f ./deploy/crds/terra.rebels.info_v1alpha1_validator_cr.
 Verify that kubectl prints the following message: `validator.terra.rebels.info/example-validator created`
 
 ##### ValidatorSpec
-  fromKeyName: application-oracle-key-name
-  name: validator-moniker
-  initialCommissionRate: validator-commission-rate
-  maximumCommission: validator-commission-max-rate
-  commissionChangeRate: validator-commission-max-change-rate
-  minimumSelfBondAmount: validator-min-self-delegation
-  initialSelfBondAmount: validator-amount
-  chainId: validator-chain-id
-  nodeImage: validator-node-image
-  dataVolume:
-    name: my-nfs-share
+
+```
+  chainId: validator-chain-id (required)
+  nodeImage: validator-node-image (required)
+  name: validator-moniker (required)
+  description: validator-description (optional)
+  website: validator-website (optional)
+  fromKeyName: validator-application-oracle-key-name (required)
+  minimumSelfBondAmount: validator-min-self-delegation (required)
+  initialSelfBondAmount: validator-amount (required)
+  initialCommissionRate: validator-commission-rate (required)
+  maximumCommission: validator-commission-max-rate (required)
+  commissionChangeRate: validator-commission-max-change-rate (required)
+  dataVolume: (optional)
+    name: my-nfs-share (required)
     nfs:
-      server: my.nfs.share
-      path: /my-nfs-share/
+      server: my.nfs.share (required)
+      path: /my-nfs-share/ (required)
+```
 
 ## Want to help make our documentation better?
  * Want to **log an issue**? Feel free to visit our [GitHub site](https://github.com/terra-rebels/terra-operator/issues).
