@@ -97,6 +97,6 @@ TODO
 #### How to mount a volume containing the target Terra chain on a Validator
 TODO
 
-## Want to help make our dcoumentation better?
+## Want to help make our documentation better?
  * Want to **log an issue**? Feel free to visit our [GitHub site](https://github.com/terra-rebels/terra-operator/issues).
  
