@@ -4,13 +4,13 @@ import (
 	"context"
 
 	terrav1alpha1 "github.com/terra-rebels/terra-operator/pkg/apis/terra/v1alpha1"
+
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -50,15 +50,6 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 
 	// Watch for changes to secondary resources and requeue the owner TerradNode
 	err = c.Watch(&source.Kind{Type: &corev1.Pod{}}, &handler.EnqueueRequestForOwner{
-		IsController: true,
-		OwnerType:    &terrav1alpha1.TerradNode{},
-	})
-
-	if err != nil {
-		return err
-	}
-
-	err = c.Watch(&source.Kind{Type: &corev1.Service{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
 		OwnerType:    &terrav1alpha1.TerradNode{},
 	})
@@ -133,32 +124,6 @@ func (r *ReconcileTerradNode) Reconcile(request reconcile.Request) (reconcile.Re
 		return reconcile.Result{}, err
 	}
 
-	// Define a new Service object
-	service := newServiceForCR(instance)
-	service.Spec.Selector = pod.ObjectMeta.Labels
-
-	// Set TerradNode instance as the owner and controller
-	if err := controllerutil.SetControllerReference(instance, service, r.scheme); err != nil {
-		return reconcile.Result{}, err
-	}
-
-	// Check if this Service already exists
-	foundService := &corev1.Service{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, foundService)
-
-	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
-		err = r.client.Create(context.TODO(), service)
-		if err != nil {
-			return reconcile.Result{}, err
-		}
-
-		// Service created successfully - don't requeue
-		return reconcile.Result{}, nil
-	} else if err != nil {
-		return reconcile.Result{}, err
-	}
-
 	// Everything is fine, dont requeue
 	return reconcile.Result{}, nil
 }
@@ -200,7 +165,7 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 
 	podSpec := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "-pod",
+			Name:      cr.Name,
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
@@ -241,49 +206,4 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 	}
 
 	return podSpec
-}
-
-func newServiceForCR(cr *terrav1alpha1.TerradNode) *corev1.Service {
-	labels := map[string]string{
-		"app": cr.Name,
-	}
-
-	const (
-		servicePortSeed = 50000
-	)
-
-	const (
-		p2pPort = servicePortSeed + iota
-		rpcPort = servicePortSeed + iota
-		lcdPort = servicePortSeed + iota
-	)
-
-	ports := []corev1.ServicePort{
-		{
-			Name:       "p2p",
-			Port:       p2pPort,
-			TargetPort: intstr.FromString("p2p"),
-		},
-		{
-			Name:       "rpc",
-			Port:       rpcPort,
-			TargetPort: intstr.FromString("rpc"),
-		},
-		{
-			Name:       "lcd",
-			Port:       lcdPort,
-			TargetPort: intstr.FromString("lcd"),
-		},
-	}
-
-	return &corev1.Service{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "-service",
-			Namespace: cr.Namespace,
-			Labels:    labels,
-		},
-		Spec: corev1.ServiceSpec{
-			Ports: ports,
-		},
-	}
 }

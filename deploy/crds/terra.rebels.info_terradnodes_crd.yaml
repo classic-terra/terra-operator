@@ -14,7 +14,7 @@ spec:
   - name: v1alpha1
     served: true
     storage: true
-    schema:      
+    schema:
       openAPIV3Schema:
         description: TerradNode is the Schema for the terradnodes API
         properties:
@@ -1227,9 +1227,6 @@ spec:
               isFullNode:
                 type: boolean
               nodeImage:
-                description: 'Important: Run "operator-sdk generate k8s" to regenerate
-                  code after modifying this file Add custom validation using kubebuilder
-                  tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
                 type: string
               postStartCommand:
                 items:
@@ -1241,6 +1238,6 @@ spec:
           status:
             description: TerradNodeStatus defines the observed state of TerradNode
             type: object
+        required:
+        - spec
         type: object
-    subresources:
-      status: {}  

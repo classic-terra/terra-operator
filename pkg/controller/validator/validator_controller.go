@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	terrav1alpha1 "github.com/terra-rebels/terra-operator/pkg/apis/terra/v1alpha1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -36,12 +38,14 @@ func newReconciler(mgr manager.Manager) reconcile.Reconciler {
 func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	// Create a new controller
 	c, err := controller.New("validator-controller", mgr, controller.Options{Reconciler: r})
+
 	if err != nil {
 		return err
 	}
 
 	// Watch for changes to primary resource Validator
 	err = c.Watch(&source.Kind{Type: &terrav1alpha1.Validator{}}, &handler.EnqueueRequestForObject{})
+
 	if err != nil {
 		return err
 	}
@@ -49,7 +53,16 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	// Watch for changes to secondary resources and requeue the owner TerradNode
 	err = c.Watch(&source.Kind{Type: &terrav1alpha1.TerradNode{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
-		OwnerType:    &terrav1alpha1.TerradNode{},
+		OwnerType:    &terrav1alpha1.Validator{},
+	})
+
+	if err != nil {
+		return err
+	}
+
+	err = c.Watch(&source.Kind{Type: &corev1.Service{}}, &handler.EnqueueRequestForOwner{
+		IsController: true,
+		OwnerType:    &terrav1alpha1.Validator{},
 	})
 
 	if err != nil {
@@ -81,7 +94,9 @@ func (r *ReconcileValidator) Reconcile(request reconcile.Request) (reconcile.Res
 
 	// Fetch the Validator instance
 	instance := &terrav1alpha1.Validator{}
+
 	err := r.client.Get(context.TODO(), request.NamespacedName, instance)
+
 	if err != nil {
 		if errors.IsNotFound(err) {
 			// Request object not found, could have been deleted after reconcile request.
@@ -96,7 +111,7 @@ func (r *ReconcileValidator) Reconcile(request reconcile.Request) (reconcile.Res
 	// Define a new TerradNode object
 	terrad := newTerradNodeForCR(instance)
 
-	// Set TerradNode instance as the owner and controller
+	// Set Validator instance as the owner and controller
 	if err := controllerutil.SetControllerReference(instance, terrad, r.scheme); err != nil {
 		return reconcile.Result{}, err
 	}
@@ -108,7 +123,7 @@ func (r *ReconcileValidator) Reconcile(request reconcile.Request) (reconcile.Res
 	if err != nil && errors.IsNotFound(err) {
 		reqLogger.Info("Creating a new TerradNode", "TerradNode.Namespace", terrad.Namespace, "TerradNode.Name", terrad.Name)
 
-		//TerradNode
+		//Create TerradNode if it doesnt exist
 		err = r.client.Create(context.TODO(), terrad)
 
 		if err != nil {
@@ -122,6 +137,37 @@ func (r *ReconcileValidator) Reconcile(request reconcile.Request) (reconcile.Res
 		return reconcile.Result{}, err
 	}
 
+	if instance.Spec.IsPublic {
+		// Define a new Service object
+		service := newServiceForCR(instance)
+
+		// Set Validator instance as the owner and controller
+		if err := controllerutil.SetControllerReference(instance, service, r.scheme); err != nil {
+			return reconcile.Result{}, err
+		}
+
+		// Check if this Service already exists
+		foundService := &corev1.Service{}
+		err = r.client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, foundService)
+
+		if err != nil && errors.IsNotFound(err) {
+			reqLogger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
+
+			//Create Service if it doesnt exist
+			err = r.client.Create(context.TODO(), service)
+
+			if err != nil {
+				// Service creation failed - requeue
+				return reconcile.Result{}, err
+			}
+
+			// Service created successfully - don't requeue
+			return reconcile.Result{}, nil
+		} else if err != nil {
+			return reconcile.Result{}, err
+		}
+	}
+
 	return reconcile.Result{}, nil
 }
 
@@ -130,7 +176,6 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 		"app": cr.Name,
 	}
 
-	//TODO: We might need to expand this is we want the validator wallet to be auto-configured by the operator. We could add a start_validator.sh script the the classic-core image and simply call that with spec as args.
 	postStartCommand := fmt.Sprintf(`terrad tx staking create-validator 
 		--pubkey=$(terrad tendermint show-validator) 		
 		--chain-id=%s
@@ -154,7 +199,7 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 
 	terrad := &terrav1alpha1.TerradNode{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "-terradnode",
+			Name:      cr.Name,
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
@@ -169,4 +214,45 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 	}
 
 	return terrad
+}
+
+func newServiceForCR(cr *terrav1alpha1.Validator) *corev1.Service {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+
+	ports := []corev1.ServicePort{
+		{
+			Name:       "p2p",
+			Port:       26656,
+			TargetPort: intstr.FromString("p2p"),
+		},
+		{
+			Name:       "rpc",
+			Port:       26657,
+			TargetPort: intstr.FromString("rpc"),
+		},
+		{
+			Name:       "lcd",
+			Port:       1317,
+			TargetPort: intstr.FromString("lcd"),
+		},
+		{
+			Name:       "prometheus",
+			Port:       26660,
+			TargetPort: intstr.FromString("prometheus"),
+		},
+	}
+
+	return &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name,
+			Namespace: cr.Namespace,
+			Labels:    labels,
+		},
+		Spec: corev1.ServiceSpec{
+			Ports:    ports,
+			Selector: labels,
+		},
+	}
 }

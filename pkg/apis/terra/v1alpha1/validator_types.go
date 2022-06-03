@@ -7,17 +7,18 @@ import (
 
 // ValidatorSpec defines the desired state of Validator
 type ValidatorSpec struct {
-	FromKeyName           string        `json:"fromKeyName"`
+	ChainId               string        `json:"chainId"`
+	NodeImage             string        `json:"nodeImage"`
 	Name                  string        `json:"name"`
-	Website               string        `json:"website,omitempty"`
-	Description           string        `json:"description,omitempty"`
+	FromKeyName           string        `json:"fromKeyName"`
 	InitialCommissionRate string        `json:"initialCommissionRate"`
 	MaximumCommission     string        `json:"maximumCommission"`
 	CommissionChangeRate  string        `json:"commissionChangeRate"`
 	MinimumSelfBondAmount string        `json:"minimumSelfBondAmount"`
 	InitialSelfBondAmount string        `json:"initialSelfBondAmount"`
-	ChainId               string        `json:"chainId"`
-	NodeImage             string        `json:"nodeImage"`
+	IsPublic              bool          `json:"isPublic,omitempty"`
+	Website               string        `json:"website,omitempty"`
+	Description           string        `json:"description,omitempty"`
 	DataVolume            corev1.Volume `json:"dataVolume,omitempty"`
 }
 
@@ -34,8 +35,8 @@ type Validator struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
+	Spec    ValidatorSpec          `json:"spec"`
 	EnvFrom []corev1.EnvFromSource `json:"envFrom,omitempty"`
-	Spec    ValidatorSpec          `json:"spec,omitempty"`
 	Status  ValidatorStatus        `json:"status,omitempty"`
 }
 

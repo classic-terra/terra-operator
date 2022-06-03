@@ -43,7 +43,7 @@ Congratulations you have now installed the Terra-Operator on your k8s cluster.
 ### TerradNode CRD (v1alpha)
 The TerradNode CRD is a custom resource definition managed by the Terra-Operator which provides the base layer for any terra node running on Kubernetes. Its job is simply to spin up a `terrad` daemon running in a initialized state with Tendermint consensus (BPOS) and networking components targeting the `ChainId` using the desired `NodeImage` client.
 
-The TerradNode consists of a `pod` running the `NodeImage` client vs a desired version of the Terra blockchain identified by the `ChainId` with the following containerPorts exposed: `1317` (LCD), `26656` (P2P), `26657` (RPC) & `26660` (Prometheus). Furthermore it kick-starts the `terrad start` command to ensure the node is initialized and running either as a `light-node` or a `full-node` depending on the `IsFullNode` value of the TerradNodeSpec. It also creates a `service` which exposes the LCD, RPC & P2P containerPorts to clients outside your Kubernetes cluster (e.g. `terra-station`).
+The TerradNode consists of a `pod` running the `NodeImage` client vs a desired version of the Terra blockchain identified by the `ChainId` with the following containerPorts exposed: `1317` (LCD), `26656` (P2P), `26657` (RPC) & `26660` (Prometheus). Furthermore it kick-starts the `terrad start` command to ensure the node is initialized and running either as a `light-node` or a `full-node` depending on the `IsFullNode` value of the TerradNodeSpec. 
 
 #### How to install TerradNode CRD
 From the root of the Terra-Operator repo run the following command:
@@ -69,8 +69,8 @@ The `terra.rebels.info_v1alpha1_terradnode_cr.yaml` example supports the followi
 ```
 spec:
   nodeImage: terradnode-container-image (required - string)
-  postStartCommand: terradnode-post-start-command (optional - string)
   isFullNode: terradnode-light-or-full (optional - bool)
+  postStartCommand: terradnode-post-start-command (optional - string)
   dataVolume: (optional)
     name: my-nfs-share (required - string)
     nfs:
@@ -80,6 +80,8 @@ spec:
 
 ### Validator CRD (v1alpha)
 The Validator CRD is a custom resource definition managed by the Terra-Operator that mounts a Validator on top of a TerradNode resource and runs it in a bonded mode using the configured Application Oracle Key (`terrad tx create-validator --from` arg). A Validators responsibility is to spin up a `terrad` daemon running as a `full-node`, mount it on a volume containing the desired blockchain snapshot (can be found at https://quicksync.io/networks/terra.html) and bootstraps a `PostStartupScript` command on the TerradNode ContainerSpec that executes the required commands to succesful launch the Terra Validator with the desired ValidatorSpec.
+
+Lastly when running in "public-mode" (`IsPublic: true`) it also creates a `service` which can route ingress traffic to the containerPorts from clients outside your Kubernetes cluster.
 
 #### How to install Validator CRD
 From the root of the Terra-Operator repo run the following command:
@@ -106,14 +108,15 @@ The `terra.rebels.info_v1alpha1_validator_cr.yaml` example supports the followin
   chainId: validator-chain-id (required - string)
   nodeImage: validator-node-image (required - string)
   name: validator-moniker (required - string)
-  description: validator-description (optional - string)
-  website: validator-website (optional - string)
   fromKeyName: validator-application-oracle-key-name (required - string)
-  minimumSelfBondAmount: validator-min-self-delegation (required - string)
-  initialSelfBondAmount: validator-amount (required - string)
   initialCommissionRate: validator-commission-rate (required - string)
   maximumCommission: validator-commission-max-rate (required - string)
   commissionChangeRate: validator-commission-max-change-rate (required - string)
+  minimumSelfBondAmount: validator-min-self-delegation (required - string)
+  initialSelfBondAmount: validator-amount (required - string)
+  isPublic: validator-is-accessible-from-outside-cluster (optional - bool)
+  description: validator-description (optional - string)
+  website: validator-website (optional - string)
   dataVolume: (optional)
     name: my-nfs-share (required - string)
     nfs:

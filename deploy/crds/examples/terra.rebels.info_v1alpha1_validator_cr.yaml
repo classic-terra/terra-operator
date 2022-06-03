@@ -4,17 +4,13 @@ metadata:
   name: example-validator
   namespace: terra
 spec:
-  fromKeyName: VALUE_FOR_CREATE-VALIDATOR_--FROM_ARG
-  name: MY_EPIC_VALIDATOR_MONIKER
+  chainId: columbus-5
+  nodeImage: toban/classic-core-node
+  name: my-epic-validator
+  fromKeyName: tmp
   initialCommissionRate: "0.20"
   maximumCommission: "1.00"
   commissionChangeRate: "0.01"
   minimumSelfBondAmount: "1"
   initialSelfBondAmount: "5000000"
-  chainId: columbus-5
-  nodeImage: toban/classic-core-node
-  # dataVolume:
-  #   name: my-nfs-volume
-  #   nfs:
-  #     server: HOSTNAME_OF_NFS
-  #     path: PATH_TO_NFS_SHARE
+  isPublic: true
