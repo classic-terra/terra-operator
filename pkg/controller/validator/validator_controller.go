@@ -237,11 +237,6 @@ func newServiceForCR(cr *terrav1alpha1.Validator) *corev1.Service {
 			Port:       1317,
 			TargetPort: intstr.FromString("lcd"),
 		},
-		{
-			Name:       "prometheus",
-			Port:       26660,
-			TargetPort: intstr.FromString("prometheus"),
-		},
 	}
 
 	return &corev1.Service{
