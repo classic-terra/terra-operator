@@ -1,5 +1,5 @@
-make: execvp: go: Permission denied
-
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/mnt/c/Users/toban/Source/repos/terra/terra-operator'
 mkdir -p /mnt/c/Users/toban/Source/repos/terra/terra-operator/bin
 GOBIN=/mnt/c/Users/toban/Source/repos/terra/terra-operator/bin go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.8.0
 /mnt/c/Users/toban/Source/repos/terra/terra-operator/bin/controller-gen object:headerFile="hack/boilerplate.go.txt" paths="./..."

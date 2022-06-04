@@ -5,9 +5,9 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
-
-# Make data base, printed on Sat Jun  4 16:34:34 2022
  
+
+# Make data base, printed on Sat Jun  4 17:18:22 2022
 
 # Variables
 
@@ -68,7 +68,7 @@ GOPATH = /home/toban/go
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-c547b0d2-8a43-40be-8244-b9ef18c3d35f.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-3eef966a-cf2e-4f3b-b9f1-063fa13770b8.sock
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # makefile (from 'Makefile', line 160)
@@ -202,9 +202,9 @@ WSL_DISTRO_NAME = Ubuntu-20.04
 
 # Directories
 
-# . (device 47, inode 19703248369866525): 19 files, no impossibilities.
+# . (device 47, inode 19703248369866525): 21 files, no impossibilities.
 
-# 19 files, no impossibilities in 1 directories.
+# 21 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -287,12 +287,12 @@ bundle: manifests kustomize
 #  Modification time never checked.
 #  File has not been updated.
 
- 
 uninstall: manifests kustomize
 #  Phony target (prerequisite of .PHONY).
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
+ 
 #  recipe to execute (from 'Makefile', line 140):
 	$(KUSTOMIZE) build config/crd | kubectl delete --ignore-not-found=$(ignore-not-found) -f -
 
@@ -418,7 +418,7 @@ bundle-build:
 
 /mnt/c/Users/toban/Source/repos/terra/terra-operator/bin:
 #  Implicit rule search has not been done.
-#  Last modified 2022-06-04 15:56:09.6949909
+#  Last modified 2022-06-04 16:41:58.2516294
 #  File has been updated.
 #  Successfully updated.
 #  recipe to execute (from 'Makefile', line 156):
@@ -455,7 +455,7 @@ controller-gen: /mnt/c/Users/toban/Source/repos/terra/terra-operator/bin/control
 /mnt/c/Users/toban/Source/repos/terra/terra-operator/bin/controller-gen: /mnt/c/Users/toban/Source/repos/terra/terra-operator/bin
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: ''
-#  Last modified 2022-06-04 15:56:08.9550343
+#  Last modified 2022-06-04 16:41:38
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # automatic
@@ -503,12 +503,12 @@ install: manifests kustomize
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 52 / storage = 676 B / avg = 13 B
-# current buf: size = 8162 B / used = 676 B / count = 52 / avg = 13 B
+# strcache buffers: 1 (0) / strings = 53 / storage = 694 B / avg = 13 B
+# current buf: size = 8162 B / used = 694 B / count = 53 / avg = 13 B
 
-# strcache performance: lookups = 188 / hit rate = 72%
+# strcache performance: lookups = 190 / hit rate = 72%
 # hash-table stats:
-# Load=52/8192=1%, Rehash=0, Collisions=4/188=2%
-# Finished Make data base on Sat Jun  4 16:34:34 2022
+# Load=53/8192=1%, Rehash=0, Collisions=4/190=2%
+# Finished Make data base on Sat Jun  4 17:18:22 2022
 
  
