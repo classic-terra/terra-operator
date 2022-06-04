@@ -151,7 +151,7 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			{
 				Name: cr.Spec.DataVolume.Name,
 				//Data folder location for terrad: https://docs.terra.money/docs/full-node/run-a-full-terra-node/sync.html#quicksync
-				MountPath: "~/.terra/data/",
+				MountPath: "/root/.terra/data/",
 			},
 		}
 	}
