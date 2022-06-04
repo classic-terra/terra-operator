@@ -11,7 +11,7 @@ metadata:
             "name": "terradnode-sample"
           },
           "spec": {
-            "nodeImage": "toban/classic-core-node"
+            "nodeImage": "toban/classic-core"
           }
         },
         {
@@ -30,7 +30,7 @@ metadata:
             "maximumCommission": "1.00",
             "minimumSelfBondAmount": "1",
             "name": "my-epic-validator",
-            "nodeImage": "toban/classic-core-node"
+            "nodeImage": "toban/classic-core"
           }
         }
       ]
