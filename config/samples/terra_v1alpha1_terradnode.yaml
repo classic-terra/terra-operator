@@ -3,4 +3,4 @@ kind: TerradNode
 metadata:
   name: terradnode-sample
 spec:
-  nodeImage: toban/classic-core
+  nodeImage: toban/classic-core-node
