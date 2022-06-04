@@ -1,0 +1,24 @@
+# permissions for end users to edit validators.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: validator-editor-role
+rules:
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - validators
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - validators/status
+  verbs:
+  - get

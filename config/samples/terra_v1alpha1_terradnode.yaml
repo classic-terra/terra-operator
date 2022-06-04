@@ -1,0 +1,6 @@
+apiVersion: terra.terra-rebels.org/v1alpha1
+kind: TerradNode
+metadata:
+  name: terradnode-sample
+spec:
+  nodeImage: toban/classic-core-node
