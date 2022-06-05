@@ -4,7 +4,7 @@ metadata:
   name: validator-sample
 spec:
   chainId: columbus-5
-  nodeImage: toban/classic-core-node:v0.5.9-oracle
+  nodeImage: toban/classic-core-node:v0.5.11-oracle
   name: my-epic-validator
   fromKeyName: tmp
   initialCommissionRate: "0.20"
