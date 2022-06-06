@@ -66,7 +66,7 @@ func (r *ValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
-	terradNode := newTerradNodeForCR(validator)
+	terradNode := newTerradNodeForValidator(validator)
 
 	if err := controllerutil.SetControllerReference(validator, terradNode, r.Scheme); err != nil {
 		return ctrl.Result{}, err
@@ -90,7 +90,7 @@ func (r *ValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 
 	if validator.Spec.IsPublic {
-		service := newServiceForCR(validator)
+		service := newServiceForValidator(validator)
 
 		if err := controllerutil.SetControllerReference(validator, service, r.Scheme); err != nil {
 			return ctrl.Result{}, err
@@ -117,7 +117,7 @@ func (r *ValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	return ctrl.Result{}, nil
 }
 
-func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
+func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
@@ -135,7 +135,7 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 		--gas auto
 		--node tcp://127.0.0.1:26647`,
 		cr.Spec.ChainId,
-		cr.Spec.Name,
+		cr.Name,
 		cr.Spec.FromKeyName,
 		cr.Spec.InitialSelfBondAmount,
 		cr.Spec.InitialCommissionRate,
@@ -150,9 +150,9 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 			Labels:    labels,
 		},
 		Spec: terrav1alpha1.TerradNodeSpec{
-			NodeImage:  cr.Spec.NodeImage,
-			IsFullNode: true,
-			DataVolume: cr.Spec.DataVolume,
+			TerradNodeImage: cr.Spec.TerradNodeImage,
+			IsFullNode:      true,
+			DataVolume:      cr.Spec.DataVolume,
 			PostStartCommand: []string{
 				postStartCommand,
 			},
@@ -162,7 +162,7 @@ func newTerradNodeForCR(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 	return terrad
 }
 
-func newServiceForCR(cr *terrav1alpha1.Validator) *corev1.Service {
+func newServiceForValidator(cr *terrav1alpha1.Validator) *corev1.Service {
 	labels := map[string]string{
 		"app": cr.Name,
 	}

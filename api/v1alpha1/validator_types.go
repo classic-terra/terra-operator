@@ -24,8 +24,7 @@ import (
 // ValidatorSpec defines the desired state of Validator
 type ValidatorSpec struct {
 	ChainId               string        `json:"chainId"`
-	NodeImage             string        `json:"nodeImage"`
-	Name                  string        `json:"name"`
+	TerradNodeImage       string        `json:"terradNodeImage"`
 	FromKeyName           string        `json:"fromKeyName"`
 	InitialCommissionRate string        `json:"initialCommissionRate"`
 	MaximumCommission     string        `json:"maximumCommission"`

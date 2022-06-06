@@ -3,4 +3,4 @@ kind: TerradNode
 metadata:
   name: terradnode-sample
 spec:
-  nodeImage: toban/classic-core-node:v0.5.11-oracle
+  terradNodeImage: toban/classic-core-node:v0.5.11-oracle

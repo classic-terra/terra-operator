@@ -64,7 +64,7 @@ func (r *TerradNodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return ctrl.Result{}, err
 	}
 
-	pod := newPodForCR(terradNode)
+	pod := newPodForTerradNode(terradNode)
 
 	if err := controllerutil.SetControllerReference(terradNode, pod, r.Scheme); err != nil {
 		return ctrl.Result{}, err
@@ -90,7 +90,7 @@ func (r *TerradNodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	return ctrl.Result{}, nil
 }
 
-func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
+func newPodForTerradNode(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
@@ -135,7 +135,7 @@ func newPodForCR(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			Containers: []corev1.Container{
 				{
 					Name:  "terrad",
-					Image: cr.Spec.NodeImage,
+					Image: cr.Spec.TerradNodeImage,
 					Ports: ports,
 					Resources: corev1.ResourceRequirements{
 						Requests: minimumRequestLimits,
