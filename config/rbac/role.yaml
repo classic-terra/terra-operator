@@ -56,6 +56,32 @@ rules:
   verbs:
   - get
   - patch
+  - update  
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - oraclefeeders
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - oraclefeeders/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - oraclefeeders/status
+  verbs:
+  - get
+  - patch
   - update
 - apiGroups: [""]
   resources:
