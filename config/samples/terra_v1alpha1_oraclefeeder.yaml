@@ -3,4 +3,4 @@ kind: OracleFeeder
 metadata:
   name: oraclefeeder-sample
 spec:
-  # TODO(user): Add fields here
+  nodeImage: toban/classic-core-node-oraclefeeder:v0.5.11-oracle

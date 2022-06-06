@@ -5,6 +5,7 @@ metadata:
 spec:
   chainId: columbus-5
   terradNodeImage: toban/classic-core-node:v0.5.11-oracle
+  oracleFeederNodeImage: toban/classic-core-node-oraclefeeder:v0.5.11-oracle
   fromKeyName: tmp
   initialCommissionRate: "0.20"
   maximumCommission: "1.00"

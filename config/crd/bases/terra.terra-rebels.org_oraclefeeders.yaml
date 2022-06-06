@@ -39,8 +39,10 @@ spec:
                 type: string
               keyPath:
                 type: string
-              lightClientDaemonEndpoint:
-                type: string
+              lcdEndpoints:
+                items:
+                  type: string
+                type: array
               nodeImage:
                 type: string
               passphrase:
@@ -52,13 +54,7 @@ spec:
                   type: string
                 type: array
             required:
-            - chainId
-            - keyPath
-            - lightClientDaemonEndpoint
             - nodeImage
-            - passphrase
-            - priceServerEndpoint
-            - validators
             type: object
           status:
             description: OracleFeederStatus defines the observed state of OracleFeeder

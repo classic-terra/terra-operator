@@ -43,6 +43,7 @@ func (r *ValidatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&terrav1alpha1.Validator{}).
 		Owns(&terrav1alpha1.TerradNode{}).
+		Owns(&terrav1alpha1.OracleFeeder{}).
 		Owns(&corev1.Service{}).
 		Complete(r)
 }
@@ -89,6 +90,29 @@ func (r *ValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
+	oracleFeeder := newOracleFeederForValidator(validator)
+
+	if err := controllerutil.SetControllerReference(validator, oracleFeeder, r.Scheme); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	foundOracleFeeder := &terrav1alpha1.OracleFeeder{}
+	err = r.Client.Get(context.TODO(), types.NamespacedName{Name: oracleFeeder.Name, Namespace: oracleFeeder.Namespace}, foundOracleFeeder)
+
+	if err != nil && errors.IsNotFound(err) {
+		logger.Info("Creating a new OracleFeeder", "OracleFeeder.Namespace", oracleFeeder.Namespace, "OracleFeeder.Name", oracleFeeder.Name)
+
+		err = r.Client.Create(context.TODO(), oracleFeeder)
+
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+
+		return ctrl.Result{}, nil
+	} else if err != nil {
+		return ctrl.Result{}, err
+	}
+
 	if validator.Spec.IsPublic {
 		service := newServiceForValidator(validator)
 
@@ -117,11 +141,32 @@ func (r *ValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	return ctrl.Result{}, nil
 }
 
+func newOracleFeederForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.OracleFeeder {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+
+	oracleFeeder := &terrav1alpha1.OracleFeeder{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name + "-oraclefeeder",
+			Namespace: cr.Namespace,
+			Labels:    labels,
+		},
+		Spec: terrav1alpha1.OracleFeederSpec{
+			ChainId:   cr.Spec.ChainId,
+			NodeImage: cr.Spec.OracleFeederNodeImage,
+		},
+	}
+
+	return oracleFeeder
+}
+
 func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
 
+	//TODO: Replace this with a more complex bash script that will bootstrap a validator from the "ground-up"
 	postStartCommand := fmt.Sprintf(`terrad tx staking create-validator 
 		--pubkey=$(terrad tendermint show-validator) 		
 		--chain-id=%s
@@ -145,7 +190,7 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 
 	terrad := &terrav1alpha1.TerradNode{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name,
+			Name:      cr.Name + "-terrad",
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
@@ -165,6 +210,10 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 func newServiceForValidator(cr *terrav1alpha1.Validator) *corev1.Service {
 	labels := map[string]string{
 		"app": cr.Name,
+	}
+
+	selector := map[string]string{
+		"app": cr.Name + "-terrad",
 	}
 
 	ports := []corev1.ServicePort{
@@ -187,13 +236,13 @@ func newServiceForValidator(cr *terrav1alpha1.Validator) *corev1.Service {
 
 	return &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name,
+			Name:      cr.Name + "-service",
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
 		Spec: corev1.ServiceSpec{
 			Ports:    ports,
-			Selector: labels,
+			Selector: selector,
 		},
 	}
 }

@@ -33,7 +33,10 @@ spec:
           metadata:
             type: object
           spec:
-            description: ValidatorSpec defines the desired state of Validator
+            description: 'ValidatorSpec defines the desired state of Validator TODO:
+              Figure out if we can somehow replace the FromKeyName with a the mnenomic
+              and keyphrase prop and use those as both the Application Oracle Key
+              and the oraclefeeder mnemonic'
             properties:
               chainId:
                 type: string
@@ -1495,6 +1498,8 @@ spec:
                 type: string
               minimumSelfBondAmount:
                 type: string
+              oracleFeederNodeImage:
+                type: string
               terradNodeImage:
                 type: string
               website:
@@ -1507,6 +1512,7 @@ spec:
             - initialSelfBondAmount
             - maximumCommission
             - minimumSelfBondAmount
+            - oracleFeederNodeImage
             - terradNodeImage
             type: object
           status:

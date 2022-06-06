@@ -150,8 +150,9 @@ func newPodForTerradNode(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		pod.Spec.Containers[0].VolumeMounts = []corev1.VolumeMount{
 			{
 				Name: cr.Spec.DataVolume.Name,
+				//TODO: Test successful mounting of pre-downloaded columbus-5 snapshot
 				//Data folder location for terrad: https://docs.terra.money/docs/full-node/run-a-full-terra-node/sync.html#quicksync
-				MountPath: "/root/.terra/data/",
+				MountPath: "/home/user/.terra/data/",
 			},
 		}
 	}

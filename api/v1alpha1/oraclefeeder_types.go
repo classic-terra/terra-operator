@@ -22,13 +22,13 @@ import (
 
 // OracleFeederSpec defines the desired state of OracleFeeder
 type OracleFeederSpec struct {
-	ChainId                   string   `json:"chainId"`
-	NodeImage                 string   `json:"nodeImage"`
-	KeyPath                   string   `json:"keyPath"`
-	Passphrase                string   `json:"passphrase"`
-	PriceServerEndpoint       string   `json:"priceServerEndpoint"`
-	LightClientDaemonEndpoint string   `json:"lightClientDaemonEndpoint"`
-	Validators                []string `json:"validators"`
+	NodeImage           string   `json:"nodeImage"`
+	ChainId             string   `json:"chainId,omitempty"`
+	Passphrase          string   `json:"passphrase,omitempty"`
+	KeyPath             string   `json:"keyPath,omitempty"`
+	PriceServerEndpoint string   `json:"priceServerEndpoint,omitempty"`
+	LcdEndpoints        []string `json:"lcdEndpoints,omitempty"`
+	Validators          []string `json:"validators,omitempty"`
 }
 
 // OracleFeederStatus defines the observed state of OracleFeeder
