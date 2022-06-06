@@ -150,9 +150,9 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 			Labels:    labels,
 		},
 		Spec: terrav1alpha1.TerradNodeSpec{
-			TerradNodeImage: cr.Spec.TerradNodeImage,
-			IsFullNode:      true,
-			DataVolume:      cr.Spec.DataVolume,
+			NodeImage:  cr.Spec.TerradNodeImage,
+			IsFullNode: true,
+			DataVolume: cr.Spec.DataVolume,
 			PostStartCommand: []string{
 				postStartCommand,
 			},

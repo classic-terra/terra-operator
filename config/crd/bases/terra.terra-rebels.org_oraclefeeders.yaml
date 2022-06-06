@@ -1,0 +1,83 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  name: oraclefeeders.terra.terra-rebels.org
+spec:
+  group: terra.terra-rebels.org
+  names:
+    kind: OracleFeeder
+    listKind: OracleFeederList
+    plural: oraclefeeders
+    singular: oraclefeeder
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: OracleFeeder is the Schema for the oraclefeeders API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: OracleFeederSpec defines the desired state of OracleFeeder
+            properties:
+              chainId:
+                type: string
+              keyPath:
+                type: string
+              lightClientDaemonEndpoint:
+                type: string
+              nodeImage:
+                type: string
+              passphrase:
+                type: string
+              priceServerEndpoint:
+                type: string
+              validators:
+                items:
+                  type: string
+                type: array
+            required:
+            - chainId
+            - keyPath
+            - lightClientDaemonEndpoint
+            - nodeImage
+            - passphrase
+            - priceServerEndpoint
+            - validators
+            type: object
+          status:
+            description: OracleFeederStatus defines the observed state of OracleFeeder
+            properties:
+              nodes:
+                items:
+                  type: string
+                type: array
+            required:
+            - nodes
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

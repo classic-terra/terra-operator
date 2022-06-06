@@ -2,4 +2,5 @@
 resources:
 - terra_v1alpha1_terradnode.yaml
 - terra_v1alpha1_validator.yaml
+- terra_v1alpha1_oraclefeeder.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples

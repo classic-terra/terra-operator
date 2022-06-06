@@ -135,7 +135,7 @@ func newPodForTerradNode(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			Containers: []corev1.Container{
 				{
 					Name:  "terrad",
-					Image: cr.Spec.TerradNodeImage,
+					Image: cr.Spec.NodeImage,
 					Ports: ports,
 					Resources: corev1.ResourceRequirements{
 						Requests: minimumRequestLimits,

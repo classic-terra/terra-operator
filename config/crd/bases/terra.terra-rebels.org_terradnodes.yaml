@@ -1479,14 +1479,14 @@ spec:
                 type: object
               isFullNode:
                 type: boolean
+              nodeImage:
+                type: string
               postStartCommand:
                 items:
                   type: string
                 type: array
-              terradNodeImage:
-                type: string
             required:
-            - terradNodeImage
+            - nodeImage
             type: object
           status:
             description: TerradNodeStatus defines the observed state of TerradNode

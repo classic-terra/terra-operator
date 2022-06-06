@@ -1,0 +1,6 @@
+apiVersion: terra.terra-rebels.org/v1alpha1
+kind: OracleFeeder
+metadata:
+  name: oraclefeeder-sample
+spec:
+  # TODO(user): Add fields here

@@ -23,7 +23,7 @@ import (
 
 // TerradNodeSpec defines the desired state of TerradNode
 type TerradNodeSpec struct {
-	TerradNodeImage  string        `json:"terradNodeImage"`
+	NodeImage        string        `json:"nodeImage"`
 	IsFullNode       bool          `json:"isFullNode,omitempty"`
 	PostStartCommand []string      `json:"postStartCommand,omitempty"`
 	DataVolume       corev1.Volume `json:"dataVolume,omitempty"`
