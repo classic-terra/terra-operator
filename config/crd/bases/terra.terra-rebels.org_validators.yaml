@@ -33,10 +33,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: 'ValidatorSpec defines the desired state of Validator TODO:
-              Figure out if we can somehow replace the FromKeyName with a the mnenomic
-              and keyphrase prop and use those as both the Application Oracle Key
-              and the oraclefeeder mnemonic'
+            description: ValidatorSpec defines the desired state of Validator
             properties:
               chainId:
                 type: string
@@ -1486,8 +1483,6 @@ spec:
                 type: object
               description:
                 type: string
-              fromKeyName:
-                type: string
               initialCommissionRate:
                 type: string
               initialSelfBondAmount:
@@ -1498,7 +1493,11 @@ spec:
                 type: string
               minimumSelfBondAmount:
                 type: string
+              mnenomic:
+                type: string
               oracleFeederNodeImage:
+                type: string
+              passphrase:
                 type: string
               terradNodeImage:
                 type: string
@@ -1507,12 +1506,13 @@ spec:
             required:
             - chainId
             - commissionChangeRate
-            - fromKeyName
             - initialCommissionRate
             - initialSelfBondAmount
             - maximumCommission
             - minimumSelfBondAmount
+            - mnenomic
             - oracleFeederNodeImage
+            - passphrase
             - terradNodeImage
             type: object
           status:

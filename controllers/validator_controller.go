@@ -166,7 +166,7 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 		"app": cr.Name,
 	}
 
-	//TODO: Replace this with a more complex bash script that will bootstrap a validator from the "ground-up"
+	//TODO: Implement keys add logic from Raider
 	postStartCommand := fmt.Sprintf(`terrad tx staking create-validator 
 		--pubkey=$(terrad tendermint show-validator) 		
 		--chain-id=%s
@@ -181,7 +181,7 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 		--node tcp://127.0.0.1:26647`,
 		cr.Spec.ChainId,
 		cr.Name,
-		cr.Spec.FromKeyName,
+		"local",
 		cr.Spec.InitialSelfBondAmount,
 		cr.Spec.InitialCommissionRate,
 		cr.Spec.MaximumCommission,

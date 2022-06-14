@@ -22,12 +22,12 @@ import (
 )
 
 // ValidatorSpec defines the desired state of Validator
-//TODO: Figure out if we can somehow replace the FromKeyName with a the mnenomic and keyphrase prop and use those as both the Application Oracle Key and the oraclefeeder mnemonic
 type ValidatorSpec struct {
 	ChainId               string        `json:"chainId"`
 	TerradNodeImage       string        `json:"terradNodeImage"`
 	OracleFeederNodeImage string        `json:"oracleFeederNodeImage"`
-	FromKeyName           string        `json:"fromKeyName"`
+	Passphrase            string        `json:"passphrase"`
+	Mnenomic              string        `json:"mnenomic"`
 	InitialCommissionRate string        `json:"initialCommissionRate"`
 	MaximumCommission     string        `json:"maximumCommission"`
 	CommissionChangeRate  string        `json:"commissionChangeRate"`

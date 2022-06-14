@@ -6,7 +6,8 @@ spec:
   chainId: columbus-5
   terradNodeImage: toban/classic-core-node:v0.5.11-oracle
   oracleFeederNodeImage: toban/classic-core-node-oraclefeeder:v0.5.11-oracle
-  fromKeyName: tmp
+  passphrase: tmp12345
+  mnenomic: words are really fun to play with
   initialCommissionRate: "0.20"
   maximumCommission: "1.00"
   commissionChangeRate: "0.01"
