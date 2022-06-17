@@ -166,8 +166,19 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 		"app": cr.Name,
 	}
 
-	//TODO: Implement keys add logic from Raider
-	postStartCommand := fmt.Sprintf(`terrad tx staking create-validator 
+	applicationOracleKeyName := "local"
+
+	postStartCommand := fmt.Sprintf(`terrad keys add %s --recover << EOF
+			%s
+			%s
+			%s
+			EOF\n &&`,
+		applicationOracleKeyName,
+		cr.Spec.Mnenomic,
+		cr.Spec.Passphrase,
+		cr.Spec.Passphrase)
+
+	postStartCommand += fmt.Sprintf(`terrad tx staking create-validator 
 		--pubkey=$(terrad tendermint show-validator) 		
 		--chain-id=%s
 		--moniker="%s" 
@@ -181,7 +192,7 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 		--node tcp://127.0.0.1:26647`,
 		cr.Spec.ChainId,
 		cr.Name,
-		"local",
+		applicationOracleKeyName,
 		cr.Spec.InitialSelfBondAmount,
 		cr.Spec.InitialCommissionRate,
 		cr.Spec.MaximumCommission,
