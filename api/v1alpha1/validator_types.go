@@ -21,6 +21,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+//TODO: Change passphrase and mnenomic to secrets once testing is complete
 // ValidatorSpec defines the desired state of Validator
 type ValidatorSpec struct {
 	ChainId               string        `json:"chainId"`
