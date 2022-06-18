@@ -18,7 +18,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -146,14 +145,44 @@ func newOracleFeederForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Ora
 		"app": cr.Name,
 	}
 
+	envVars := []corev1.EnvVar{
+		{
+			Name:  "CHAIN_ID",
+			Value: cr.Spec.ChainId,
+		},
+		//TODO: Make this configurable in case we want to split the feeder and price-server into two pods
+		{
+			Name:  "SOURCE",
+			Value: "http://localhost:8532/latest",
+		},
+		{
+			Name:  "LCD_ADDRESS",
+			Value: "https://lcd.terra.dev",
+		},
+		//TODO: Figure out how to fetch this
+		{
+			Name:  "VALIDATOR",
+			Value: "FETCH_VALIDATOR_PUBKEY",
+		},
+		{
+			Name:  "PASSPHRASE",
+			Value: cr.Spec.Passphrase,
+		},
+		//TODO: Change oracle-feeder to accept mnenomic rather then key-path
+		{
+			Name:  "MNENOMIC",
+			Value: cr.Spec.Mnenomic,
+		},
+	}
+
 	oracleFeeder := &terrav1alpha1.OracleFeeder{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name + "-oraclefeeder",
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
+		Env: envVars,
 		Spec: terrav1alpha1.OracleFeederSpec{
-			ChainId:   cr.Spec.ChainId,
 			NodeImage: cr.Spec.OracleFeederNodeImage,
 		},
 	}
@@ -166,38 +195,44 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 		"app": cr.Name,
 	}
 
-	applicationOracleKeyName := "local"
-
-	postStartCommand := fmt.Sprintf(`terrad keys add %s --recover << EOF
-			%s
-			%s
-			%s
-			EOF\n &&`,
-		applicationOracleKeyName,
-		cr.Spec.Mnenomic,
-		cr.Spec.Passphrase,
-		cr.Spec.Passphrase)
-
-	postStartCommand += fmt.Sprintf(`terrad tx staking create-validator 
-		--pubkey=$(terrad tendermint show-validator) 		
-		--chain-id=%s
-		--moniker="%s" 
-		--from=%s
-		--amount=%s
-		--commission-rate="%s" 
-		--commission-max-rate="%s" 
-		--commission-max-change-rate="%s" 
-		--min-self-delegation="%s"
-		--gas auto
-		--node tcp://127.0.0.1:26647`,
-		cr.Spec.ChainId,
-		cr.Name,
-		applicationOracleKeyName,
-		cr.Spec.InitialSelfBondAmount,
-		cr.Spec.InitialCommissionRate,
-		cr.Spec.MaximumCommission,
-		cr.Spec.CommissionChangeRate,
-		cr.Spec.MinimumSelfBondAmount)
+	envVars := []corev1.EnvVar{
+		{
+			Name:  "CHAINID",
+			Value: cr.Spec.ChainId,
+		},
+		{
+			Name:  "VALIDATOR_KEYNAME",
+			Value: cr.Name,
+		},
+		{
+			Name:  "VALIDATOR_PASSPHRASE",
+			Value: cr.Spec.Passphrase,
+		},
+		{
+			Name:  "VALIDATOR_MNENOMIC",
+			Value: cr.Spec.Mnenomic,
+		},
+		{
+			Name:  "VALIDATOR_AMOUNT",
+			Value: cr.Spec.Amount,
+		},
+		{
+			Name:  "VALIDATOR_COMMISSION_RATE",
+			Value: cr.Spec.CommissionRate,
+		},
+		{
+			Name:  "VALIDATOR_COMMISSION_RATE_MAX",
+			Value: cr.Spec.CommissionRateMax,
+		},
+		{
+			Name:  "VALIDATOR_COMMISSION_RATE_MAX_CHANGE",
+			Value: cr.Spec.CommissionRateMaxChange,
+		},
+		{
+			Name:  "VALIDATOR_MIN_SELF_DELEGATION",
+			Value: cr.Spec.MinimumSelfDelegation,
+		},
+	}
 
 	terrad := &terrav1alpha1.TerradNode{
 		ObjectMeta: metav1.ObjectMeta{
@@ -205,13 +240,11 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
+		Env: envVars,
 		Spec: terrav1alpha1.TerradNodeSpec{
 			NodeImage:  cr.Spec.TerradNodeImage,
 			IsFullNode: true,
 			DataVolume: cr.Spec.DataVolume,
-			PostStartCommand: []string{
-				postStartCommand,
-			},
 		},
 	}
 

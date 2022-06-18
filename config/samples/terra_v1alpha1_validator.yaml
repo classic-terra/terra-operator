@@ -6,11 +6,11 @@ spec:
   chainId: columbus-5
   terradNodeImage: toban/classic-core-node:v0.5.11-oracle
   oracleFeederNodeImage: toban/classic-core-node-oraclefeeder:v0.5.11-oracle
-  passphrase: tmp12345
-  mnenomic: words are really fun to play with
-  initialCommissionRate: "0.20"
-  maximumCommission: "1.00"
-  commissionChangeRate: "0.01"
-  minimumSelfBondAmount: "1"
-  initialSelfBondAmount: "5000000"
+  passphrase: "12345678"
+  mnenomic: torch swamp cancel lift never october child harsh rib aspect luxury word peanut length bamboo hawk material vehicle glue above west random sketch author  
+  amount: 1uluna
+  commissionRate: "0.20"
+  commissionRateMax: "1.00"
+  commissionRateMaxChange: "0.01"
+  minimumSelfDelegation: "1"
   isPublic: true

@@ -18,7 +18,6 @@ package controllers
 
 import (
 	"context"
-	"strings"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -95,50 +94,6 @@ func newPodForOracleFeeder(cr *terrav1alpha1.OracleFeeder) *corev1.Pod {
 		"app": cr.Name,
 	}
 
-	envVars := []corev1.EnvVar{}
-
-	if len(cr.Spec.ChainId) > 0 {
-		envVars = append(envVars, corev1.EnvVar{
-			Name:  "CHAIN_ID",
-			Value: cr.Spec.ChainId,
-		})
-	}
-
-	if len(cr.Spec.PriceServerEndpoint) > 0 {
-		envVars = append(envVars, corev1.EnvVar{
-			Name:  "SOURCE",
-			Value: cr.Spec.PriceServerEndpoint,
-		})
-	}
-
-	if len(cr.Spec.KeyPath) > 0 {
-		envVars = append(envVars, corev1.EnvVar{
-			Name:  "KEY_PATH",
-			Value: cr.Spec.KeyPath,
-		})
-	}
-
-	if len(cr.Spec.Passphrase) > 0 {
-		envVars = append(envVars, corev1.EnvVar{
-			Name:  "PASSPHRASE",
-			Value: cr.Spec.Passphrase,
-		})
-	}
-
-	if len(cr.Spec.LcdEndpoints) > 0 {
-		envVars = append(envVars, corev1.EnvVar{
-			Name:  "LCD_ADDRESS",
-			Value: strings.Join(cr.Spec.LcdEndpoints, ","),
-		})
-	}
-
-	if len(cr.Spec.Validators) > 0 {
-		envVars = append(envVars, corev1.EnvVar{
-			Name:  "VALIDATOR",
-			Value: strings.Join(cr.Spec.Validators, ","),
-		})
-	}
-
 	pod := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name,
@@ -150,7 +105,7 @@ func newPodForOracleFeeder(cr *terrav1alpha1.OracleFeeder) *corev1.Pod {
 				{
 					Name:  "oraclefeeder",
 					Image: cr.Spec.NodeImage,
-					Env:   envVars,
+					Env:   cr.Env,
 				},
 			},
 		},

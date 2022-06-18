@@ -21,23 +21,22 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-//TODO: Change passphrase and mnenomic to secrets once testing is complete
 // ValidatorSpec defines the desired state of Validator
 type ValidatorSpec struct {
-	ChainId               string        `json:"chainId"`
-	TerradNodeImage       string        `json:"terradNodeImage"`
-	OracleFeederNodeImage string        `json:"oracleFeederNodeImage"`
-	Passphrase            string        `json:"passphrase"`
-	Mnenomic              string        `json:"mnenomic"`
-	InitialCommissionRate string        `json:"initialCommissionRate"`
-	MaximumCommission     string        `json:"maximumCommission"`
-	CommissionChangeRate  string        `json:"commissionChangeRate"`
-	MinimumSelfBondAmount string        `json:"minimumSelfBondAmount"`
-	InitialSelfBondAmount string        `json:"initialSelfBondAmount"`
-	IsPublic              bool          `json:"isPublic,omitempty"`
-	Website               string        `json:"website,omitempty"`
-	Description           string        `json:"description,omitempty"`
-	DataVolume            corev1.Volume `json:"dataVolume,omitempty"`
+	ChainId                 string        `json:"chainId"`
+	TerradNodeImage         string        `json:"terradNodeImage"`
+	OracleFeederNodeImage   string        `json:"oracleFeederNodeImage"`
+	Passphrase              string        `json:"passphrase"`
+	Mnenomic                string        `json:"mnenomic"`
+	Amount                  string        `json:"amount"`
+	CommissionRate          string        `json:"commissionRate"`
+	CommissionRateMax       string        `json:"commissionRateMax"`
+	CommissionRateMaxChange string        `json:"commissionRateMaxChange"`
+	MinimumSelfDelegation   string        `json:"minimumSelfDelegation"`
+	IsPublic                bool          `json:"isPublic,omitempty"`
+	Website                 string        `json:"website,omitempty"`
+	Description             string        `json:"description,omitempty"`
+	DataVolume              corev1.Volume `json:"dataVolume,omitempty"`
 }
 
 // ValidatorStatus defines the observed state of Validator

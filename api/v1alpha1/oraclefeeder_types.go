@@ -17,23 +17,18 @@ limitations under the License.
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // OracleFeederSpec defines the desired state of OracleFeeder
 type OracleFeederSpec struct {
-	NodeImage           string   `json:"nodeImage"`
-	ChainId             string   `json:"chainId,omitempty"`
-	Passphrase          string   `json:"passphrase,omitempty"`
-	KeyPath             string   `json:"keyPath,omitempty"`
-	PriceServerEndpoint string   `json:"priceServerEndpoint,omitempty"`
-	LcdEndpoints        []string `json:"lcdEndpoints,omitempty"`
-	Validators          []string `json:"validators,omitempty"`
+	NodeImage string `json:"nodeImage"`
 }
 
 // OracleFeederStatus defines the observed state of OracleFeeder
 type OracleFeederStatus struct {
-	Nodes []string `json:"nodes"`
+	Oracles []string `json:"oracles"`
 }
 
 //+kubebuilder:object:root=true
@@ -44,7 +39,9 @@ type OracleFeeder struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   OracleFeederSpec   `json:"spec,omitempty"`
+	//TODO: Change to corev1.SecretEnvSource
+	Env    []corev1.EnvVar    `json:"env"`
+	Spec   OracleFeederSpec   `json:"spec"`
 	Status OracleFeederStatus `json:"status,omitempty"`
 }
 

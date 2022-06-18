@@ -35,9 +35,15 @@ spec:
           spec:
             description: ValidatorSpec defines the desired state of Validator
             properties:
+              amount:
+                type: string
               chainId:
                 type: string
-              commissionChangeRate:
+              commissionRate:
+                type: string
+              commissionRateMax:
+                type: string
+              commissionRateMaxChange:
                 type: string
               dataVolume:
                 description: Volume represents a named volume in a pod that may be
@@ -1483,15 +1489,9 @@ spec:
                 type: object
               description:
                 type: string
-              initialCommissionRate:
-                type: string
-              initialSelfBondAmount:
-                type: string
               isPublic:
                 type: boolean
-              maximumCommission:
-                type: string
-              minimumSelfBondAmount:
+              minimumSelfDelegation:
                 type: string
               mnenomic:
                 type: string
@@ -1504,12 +1504,12 @@ spec:
               website:
                 type: string
             required:
+            - amount
             - chainId
-            - commissionChangeRate
-            - initialCommissionRate
-            - initialSelfBondAmount
-            - maximumCommission
-            - minimumSelfBondAmount
+            - commissionRate
+            - commissionRateMax
+            - commissionRateMaxChange
+            - minimumSelfDelegation
             - mnenomic
             - oracleFeederNodeImage
             - passphrase

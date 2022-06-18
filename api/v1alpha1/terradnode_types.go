@@ -23,10 +23,9 @@ import (
 
 // TerradNodeSpec defines the desired state of TerradNode
 type TerradNodeSpec struct {
-	NodeImage        string        `json:"nodeImage"`
-	IsFullNode       bool          `json:"isFullNode,omitempty"`
-	PostStartCommand []string      `json:"postStartCommand,omitempty"`
-	DataVolume       corev1.Volume `json:"dataVolume,omitempty"`
+	NodeImage  string        `json:"nodeImage"`
+	IsFullNode bool          `json:"isFullNode,omitempty"`
+	DataVolume corev1.Volume `json:"dataVolume,omitempty"`
 }
 
 // TerradNodeStatus defines the observed state of TerradNode
@@ -42,7 +41,9 @@ type TerradNode struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   TerradNodeSpec   `json:"spec,omitempty"`
+	//TODO: Change to corev1.SecretEnvSource
+	Env    []corev1.EnvVar  `json:"env"`
+	Spec   TerradNodeSpec   `json:"spec"`
 	Status TerradNodeStatus `json:"status,omitempty"`
 }
 
