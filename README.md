@@ -18,13 +18,13 @@ These instructions will help you setup the terra-operator on your k8s cluster. I
 1. Build and push your image to the location specified by `IMG`:
 	
 ```sh
-make docker-build docker-push IMG=<some-registry>/terra-operator:tag
+make docker-build docker-push IMG=<some-registry>/terraclassic.operator:tag
 ```
 	
 2. Deploy the controller to the cluster with the image specified by `IMG`:
 
 ```sh
-make deploy IMG=<some-registry>/terra-operator:tag
+make deploy IMG=<some-registry>/terraclassic.operator:tag
 ```
 
 3. Install Instances of Custom Resources:

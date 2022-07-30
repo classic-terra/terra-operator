@@ -1,0 +1,6 @@
+apiVersion: terra.terra-rebels.org/v1alpha1
+kind: OracleNode
+metadata:
+  name: oraclenode-sample
+spec:
+  nodeImage: terrarebels/terraclassic.oracle-node:latest-rebel-1 

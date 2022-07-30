@@ -60,7 +60,7 @@ rules:
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - oraclefeeders
+  - oraclenodes
   verbs:
   - create
   - delete
@@ -72,13 +72,13 @@ rules:
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - oraclefeeders/finalizers
+  - oraclenodes/finalizers
   verbs:
   - update
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - oraclefeeders/status
+  - oraclenodes/status
   verbs:
   - get
   - patch

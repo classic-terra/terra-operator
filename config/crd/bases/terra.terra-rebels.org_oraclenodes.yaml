@@ -5,20 +5,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: oraclefeeders.terra.terra-rebels.org
+  name: oraclenodes.terra.terra-rebels.org
 spec:
   group: terra.terra-rebels.org
   names:
-    kind: OracleFeeder
-    listKind: OracleFeederList
-    plural: oraclefeeders
-    singular: oraclefeeder
+    kind: OracleNode
+    listKind: OracleNodeList
+    plural: oraclenodes
+    singular: oraclenode
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: OracleFeeder is the Schema for the oraclefeeders API
+        description: OracleNode is the Schema for the OracleNodes API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -26,7 +26,6 @@ spec:
               internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           env:
-            description: 'TODO: Change to corev1.SecretEnvSource'
             items:
               description: EnvVar represents an environment variable present in a
                 Container.
@@ -138,7 +137,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: OracleFeederSpec defines the desired state of OracleFeeder
+            description: 'TODO: Change to corev1.SecretEnvSource'
             properties:
               nodeImage:
                 type: string
@@ -146,7 +145,7 @@ spec:
             - nodeImage
             type: object
           status:
-            description: OracleFeederStatus defines the observed state of OracleFeeder
+            description: OracleNodeStatus defines the observed state of OracleNode
             properties:
               oracles:
                 items:
@@ -156,7 +155,6 @@ spec:
             - oracles
             type: object
         required:
-        - env
         - spec
         type: object
     served: true

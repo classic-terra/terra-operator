@@ -21,39 +21,39 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// OracleFeederSpec defines the desired state of OracleFeeder
-type OracleFeederSpec struct {
+// OracleNodeSpec defines the desired state of OracleNode
+type OracleNodeSpec struct {
 	NodeImage string `json:"nodeImage"`
 }
 
-// OracleFeederStatus defines the observed state of OracleFeeder
-type OracleFeederStatus struct {
+// OracleNodeStatus defines the observed state of OracleNode
+type OracleNodeStatus struct {
 	Oracles []string `json:"oracles"`
 }
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// OracleFeeder is the Schema for the oraclefeeders API
-type OracleFeeder struct {
+// OracleNode is the Schema for the OracleNodes API
+type OracleNode struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	//TODO: Change to corev1.SecretEnvSource
-	Env    []corev1.EnvVar    `json:"env"`
-	Spec   OracleFeederSpec   `json:"spec"`
-	Status OracleFeederStatus `json:"status,omitempty"`
+	Spec   OracleNodeSpec   `json:"spec"`
+	Status OracleNodeStatus `json:"status,omitempty"`
+	Env    []corev1.EnvVar  `json:"env,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// OracleFeederList contains a list of OracleFeeder
-type OracleFeederList struct {
+// OracleNodeList contains a list of OracleNode
+type OracleNodeList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []OracleFeeder `json:"items"`
+	Items           []OracleNode `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&OracleFeeder{}, &OracleFeederList{})
+	SchemeBuilder.Register(&OracleNode{}, &OracleNodeList{})
 }

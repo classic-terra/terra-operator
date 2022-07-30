@@ -26,7 +26,6 @@ spec:
               internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           env:
-            description: 'TODO: Change to corev1.SecretEnvSource'
             items:
               description: EnvVar represents an environment variable present in a
                 Container.
@@ -138,7 +137,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: TerradNodeSpec defines the desired state of TerradNode
+            description: 'TODO: Change to corev1.SecretEnvSource'
             properties:
               dataVolume:
                 description: Volume represents a named volume in a pod that may be
@@ -1600,7 +1599,6 @@ spec:
             - nodes
             type: object
         required:
-        - env
         - spec
         type: object
     served: true

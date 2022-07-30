@@ -42,9 +42,9 @@ type TerradNode struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	//TODO: Change to corev1.SecretEnvSource
-	Env    []corev1.EnvVar  `json:"env"`
 	Spec   TerradNodeSpec   `json:"spec"`
 	Status TerradNodeStatus `json:"status,omitempty"`
+	Env    []corev1.EnvVar  `json:"env,omitempty"`
 }
 
 //+kubebuilder:object:root=true

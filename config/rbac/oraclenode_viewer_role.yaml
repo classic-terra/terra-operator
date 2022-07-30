@@ -1,24 +1,20 @@
-# permissions for end users to edit oraclefeeders.
+# permissions for end users to view oraclenodes.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: oraclefeeder-editor-role
+  name: oraclenode-viewer-role
 rules:
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - oraclefeeders
+  - oraclenodes
   verbs:
-  - create
-  - delete
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - oraclefeeders/status
+  - oraclenodes/status
   verbs:
   - get

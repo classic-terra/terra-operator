@@ -42,7 +42,7 @@ func (r *ValidatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&terrav1alpha1.Validator{}).
 		Owns(&terrav1alpha1.TerradNode{}).
-		Owns(&terrav1alpha1.OracleFeeder{}).
+		Owns(&terrav1alpha1.OracleNode{}).
 		Owns(&corev1.Service{}).
 		Complete(r)
 }
@@ -89,19 +89,19 @@ func (r *ValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
-	oracleFeeder := newOracleFeederForValidator(validator)
+	oracleNode := newOracleNodeForValidator(validator)
 
-	if err := controllerutil.SetControllerReference(validator, oracleFeeder, r.Scheme); err != nil {
+	if err := controllerutil.SetControllerReference(validator, oracleNode, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
 
-	foundOracleFeeder := &terrav1alpha1.OracleFeeder{}
-	err = r.Client.Get(context.TODO(), types.NamespacedName{Name: oracleFeeder.Name, Namespace: oracleFeeder.Namespace}, foundOracleFeeder)
+	foundOracleNode := &terrav1alpha1.OracleNode{}
+	err = r.Client.Get(context.TODO(), types.NamespacedName{Name: oracleNode.Name, Namespace: oracleNode.Namespace}, foundOracleNode)
 
 	if err != nil && errors.IsNotFound(err) {
-		logger.Info("Creating a new OracleFeeder", "OracleFeeder.Namespace", oracleFeeder.Namespace, "OracleFeeder.Name", oracleFeeder.Name)
+		logger.Info("Creating a new OracleNode", "OracleNode.Namespace", oracleNode.Namespace, "OracleNode.Name", oracleNode.Name)
 
-		err = r.Client.Create(context.TODO(), oracleFeeder)
+		err = r.Client.Create(context.TODO(), oracleNode)
 
 		if err != nil {
 			return ctrl.Result{}, err
@@ -140,7 +140,7 @@ func (r *ValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	return ctrl.Result{}, nil
 }
 
-func newOracleFeederForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.OracleFeeder {
+func newOracleNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.OracleNode {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
@@ -175,19 +175,19 @@ func newOracleFeederForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Ora
 		},
 	}
 
-	oracleFeeder := &terrav1alpha1.OracleFeeder{
+	oracleNode := &terrav1alpha1.OracleNode{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "-oraclefeeder",
+			Name:      cr.Name + "-oraclenode",
 			Namespace: cr.Namespace,
 			Labels:    labels,
 		},
 		Env: envVars,
-		Spec: terrav1alpha1.OracleFeederSpec{
-			NodeImage: cr.Spec.OracleFeederNodeImage,
+		Spec: terrav1alpha1.OracleNodeSpec{
+			NodeImage: cr.Spec.OracleNodeImage,
 		},
 	}
 
-	return oracleFeeder
+	return oracleNode
 }
 
 func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.TerradNode {
@@ -232,6 +232,10 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 			Name:  "VALIDATOR_MIN_SELF_DELEGATION",
 			Value: cr.Spec.MinimumSelfDelegation,
 		},
+	}
+
+	if cr.Spec.AutoConfig {
+		envVars = append(envVars, corev1.EnvVar{Name: "VALIDATOR_AUTO_CONFIG", Value: "1"})
 	}
 
 	terrad := &terrav1alpha1.TerradNode{

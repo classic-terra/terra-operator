@@ -25,7 +25,7 @@ import (
 type ValidatorSpec struct {
 	ChainId                 string        `json:"chainId"`
 	TerradNodeImage         string        `json:"terradNodeImage"`
-	OracleFeederNodeImage   string        `json:"oracleFeederNodeImage"`
+	OracleNodeImage         string        `json:"oracleNodeImage"`
 	Passphrase              string        `json:"passphrase"`
 	Mnenomic                string        `json:"mnenomic"`
 	Amount                  string        `json:"amount"`
@@ -33,6 +33,7 @@ type ValidatorSpec struct {
 	CommissionRateMax       string        `json:"commissionRateMax"`
 	CommissionRateMaxChange string        `json:"commissionRateMaxChange"`
 	MinimumSelfDelegation   string        `json:"minimumSelfDelegation"`
+	AutoConfig              bool          `json:"autoConfig,omitempty"`
 	IsPublic                bool          `json:"isPublic,omitempty"`
 	Website                 string        `json:"website,omitempty"`
 	Description             string        `json:"description,omitempty"`

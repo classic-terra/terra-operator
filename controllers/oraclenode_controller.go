@@ -32,28 +32,28 @@ import (
 	terrav1alpha1 "github.com/terra-rebels/terra-operator/api/v1alpha1"
 )
 
-type OracleFeederReconciler struct {
+type OracleNodeReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-func (r *OracleFeederReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *OracleNodeReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&terrav1alpha1.OracleFeeder{}).
+		For(&terrav1alpha1.OracleNode{}).
 		Owns(&corev1.Pod{}).
 		Complete(r)
 }
 
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclefeeders,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclefeeders/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclefeeders/finalizers,verbs=update
-func (r *OracleFeederReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclenodes,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclenodes/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclenodes/finalizers,verbs=update
+func (r *OracleNodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
-	logger.Info("Reconciling OracleFeeder object")
+	logger.Info("Reconciling OracleNode object")
 
-	oracleFeeder := &terrav1alpha1.OracleFeeder{}
-	err := r.Client.Get(ctx, req.NamespacedName, oracleFeeder)
+	oracleNode := &terrav1alpha1.OracleNode{}
+	err := r.Client.Get(ctx, req.NamespacedName, oracleNode)
 
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -63,9 +63,9 @@ func (r *OracleFeederReconciler) Reconcile(ctx context.Context, req ctrl.Request
 		return ctrl.Result{}, err
 	}
 
-	pod := newPodForOracleFeeder(oracleFeeder)
+	pod := newPodForOracleNode(oracleNode)
 
-	if err := controllerutil.SetControllerReference(oracleFeeder, pod, r.Scheme); err != nil {
+	if err := controllerutil.SetControllerReference(oracleNode, pod, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
 
@@ -89,7 +89,7 @@ func (r *OracleFeederReconciler) Reconcile(ctx context.Context, req ctrl.Request
 	return ctrl.Result{}, nil
 }
 
-func newPodForOracleFeeder(cr *terrav1alpha1.OracleFeeder) *corev1.Pod {
+func newPodForOracleNode(cr *terrav1alpha1.OracleNode) *corev1.Pod {
 	labels := map[string]string{
 		"app": cr.Name,
 	}
@@ -103,7 +103,7 @@ func newPodForOracleFeeder(cr *terrav1alpha1.OracleFeeder) *corev1.Pod {
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
 				{
-					Name:  "oraclefeeder",
+					Name:  "oraclenode",
 					Image: cr.Spec.NodeImage,
 					Env:   cr.Env,
 				},

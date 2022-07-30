@@ -1,6 +1,0 @@
-apiVersion: terra.terra-rebels.org/v1alpha1
-kind: OracleFeeder
-metadata:
-  name: oraclefeeder-sample
-spec:
-  nodeImage: toban/classic-core-node-oraclefeeder:v0.5.11-oracle

@@ -3,4 +3,4 @@ kind: TerradNode
 metadata:
   name: terradnode-sample
 spec:
-  nodeImage: terrarebels/classic-core-node:v0.5.21-testnet
+  nodeImage: terrarebels/terraclassic.terrad-node:latest-rebel-1 

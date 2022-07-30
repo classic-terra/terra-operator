@@ -3,9 +3,9 @@ kind: Validator
 metadata:
   name: validator-sample
 spec:
-  chainId: columbus-5
-  terradNodeImage: toban/classic-core-node:v0.5.11-oracle
-  oracleFeederNodeImage: terrarebels/classic-core-node:v0.5.21-testnet
+  terradNodeImage: terrarebels/terraclassic.terrad-node:latest-rebel-1 
+  oracleNodeImage: terrarebels/terraclassic.oracle-node:latest-rebel-1
+  chainId: columbus-1
   passphrase: "12345678"
   mnenomic: torch swamp cancel lift never october child harsh rib aspect luxury word peanut length bamboo hawk material vehicle glue above west random sketch author  
   amount: 1uluna
@@ -14,3 +14,4 @@ spec:
   commissionRateMaxChange: "0.01"
   minimumSelfDelegation: "1"
   isPublic: true
+  autoConfig: true
