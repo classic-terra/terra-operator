@@ -25,7 +25,8 @@ import (
 type ValidatorSpec struct {
 	ChainId                 string        `json:"chainId"`
 	TerradNodeImage         string        `json:"terradNodeImage"`
-	OracleNodeImage         string        `json:"oracleNodeImage"`
+	OracleNodeImages        []string      `json:"oracleNodeImages"`
+	IndexerNodeImages       []string      `json:"indexerNodeImages"`
 	Passphrase              string        `json:"passphrase"`
 	Mnenomic                string        `json:"mnenomic"`
 	Amount                  string        `json:"amount"`

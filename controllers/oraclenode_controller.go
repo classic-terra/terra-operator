@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -94,6 +95,16 @@ func newPodForOracleNode(cr *terrav1alpha1.OracleNode) *corev1.Pod {
 		"app": cr.Name,
 	}
 
+	containers := make([]corev1.Container, len(cr.Spec.NodeImages))
+
+	for i := 0; i < len(cr.Spec.NodeImages); i++ {
+		containers = append(containers, corev1.Container{
+			Name:  fmt.Sprintf("oraclenode-%d", i),
+			Image: cr.Spec.NodeImages[i],
+			Env:   cr.Env,
+		})
+	}
+
 	pod := &corev1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name,
@@ -101,13 +112,7 @@ func newPodForOracleNode(cr *terrav1alpha1.OracleNode) *corev1.Pod {
 			Labels:    labels,
 		},
 		Spec: corev1.PodSpec{
-			Containers: []corev1.Container{
-				{
-					Name:  "oraclenode",
-					Image: cr.Spec.NodeImage,
-					Env:   cr.Env,
-				},
-			},
+			Containers: containers,
 		},
 	}
 

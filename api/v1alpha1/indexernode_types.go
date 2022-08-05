@@ -21,39 +21,41 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// OracleNodeSpec defines the desired state of OracleNode
-type OracleNodeSpec struct {
+// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
+// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+
+// IndexerNodeSpec defines the desired state of IndexerNode
+type IndexerNodeSpec struct {
 	NodeImages []string `json:"nodeImages"`
 }
 
-// OracleNodeStatus defines the observed state of OracleNode
-type OracleNodeStatus struct {
-	Oracles []string `json:"oracles"`
+// IndexerNodeStatus defines the observed state of IndexerNode
+type IndexerNodeStatus struct {
+	Indexers []string `json:"indexers"`
 }
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// OracleNode is the Schema for the OracleNodes API
-type OracleNode struct {
+// IndexerNode is the Schema for the indexernodes API
+type IndexerNode struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	//TODO: Change to corev1.SecretEnvSource
-	Spec   OracleNodeSpec   `json:"spec"`
-	Status OracleNodeStatus `json:"status,omitempty"`
-	Env    []corev1.EnvVar  `json:"env,omitempty"`
+	Spec   IndexerNodeSpec   `json:"spec,omitempty"`
+	Status IndexerNodeStatus `json:"status,omitempty"`
+	Env    []corev1.EnvVar   `json:"env,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// OracleNodeList contains a list of OracleNode
-type OracleNodeList struct {
+// IndexerNodeList contains a list of IndexerNode
+type IndexerNodeList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []OracleNode `json:"items"`
+	Items           []IndexerNode `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&OracleNode{}, &OracleNodeList{})
+	SchemeBuilder.Register(&IndexerNode{}, &IndexerNodeList{})
 }

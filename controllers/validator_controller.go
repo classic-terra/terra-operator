@@ -43,6 +43,7 @@ func (r *ValidatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&terrav1alpha1.Validator{}).
 		Owns(&terrav1alpha1.TerradNode{}).
 		Owns(&terrav1alpha1.OracleNode{}).
+		Owns(&terrav1alpha1.IndexerNode{}).
 		Owns(&corev1.Service{}).
 		Complete(r)
 }
@@ -112,6 +113,29 @@ func (r *ValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
+	indexerNode := newIndexerNodeForValidator(validator)
+
+	if err := controllerutil.SetControllerReference(validator, indexerNode, r.Scheme); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	foundIndexerNode := &terrav1alpha1.IndexerNode{}
+	err = r.Client.Get(context.TODO(), types.NamespacedName{Name: indexerNode.Name, Namespace: indexerNode.Namespace}, foundIndexerNode)
+
+	if err != nil && errors.IsNotFound(err) {
+		logger.Info("Creating a new IndexerNode", "IndexerNode.Namespace", indexerNode.Namespace, "IndexerNode.Name", indexerNode.Name)
+
+		err = r.Client.Create(context.TODO(), indexerNode)
+
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+
+		return ctrl.Result{}, nil
+	} else if err != nil {
+		return ctrl.Result{}, err
+	}
+
 	if validator.Spec.IsPublic {
 		service := newServiceForValidator(validator)
 
@@ -138,6 +162,49 @@ func (r *ValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 
 	return ctrl.Result{}, nil
+}
+
+func newIndexerNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.IndexerNode {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+
+	envVars := []corev1.EnvVar{
+		{
+			Name:  "CHAIN_ID",
+			Value: cr.Spec.ChainId,
+		},
+		{
+			Name:  "INITIAL_HEIGHT",
+			Value: "1",
+		},
+		{
+			Name:  "LCD_URI",
+			Value: "https://lcd.terra.dev",
+		},
+		{
+			Name:  "RPC_URI",
+			Value: "https://localhost:26657",
+		},
+		{
+			Name:  "SERVER_PORT",
+			Value: "3060",
+		},
+	}
+
+	indexerNode := &terrav1alpha1.IndexerNode{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name + "-indexernode",
+			Namespace: cr.Namespace,
+			Labels:    labels,
+		},
+		Env: envVars,
+		Spec: terrav1alpha1.IndexerNodeSpec{
+			NodeImages: cr.Spec.IndexerNodeImages,
+		},
+	}
+
+	return indexerNode
 }
 
 func newOracleNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.OracleNode {
@@ -183,7 +250,7 @@ func newOracleNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Oracl
 		},
 		Env: envVars,
 		Spec: terrav1alpha1.OracleNodeSpec{
-			NodeImage: cr.Spec.OracleNodeImage,
+			NodeImages: cr.Spec.OracleNodeImages,
 		},
 	}
 

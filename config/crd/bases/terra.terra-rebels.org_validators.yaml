@@ -1491,14 +1491,20 @@ spec:
                 type: object
               description:
                 type: string
+              indexerNodeImages:
+                items:
+                  type: string
+                type: array
               isPublic:
                 type: boolean
               minimumSelfDelegation:
                 type: string
               mnenomic:
                 type: string
-              oracleNodeImage:
-                type: string
+              oracleNodeImages:
+                items:
+                  type: string
+                type: array
               passphrase:
                 type: string
               terradNodeImage:
@@ -1511,9 +1517,10 @@ spec:
             - commissionRate
             - commissionRateMax
             - commissionRateMaxChange
+            - indexerNodeImages
             - minimumSelfDelegation
             - mnenomic
-            - oracleNodeImage
+            - oracleNodeImages
             - passphrase
             - terradNodeImage
             type: object

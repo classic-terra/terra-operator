@@ -5,20 +5,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: oraclenodes.terra.terra-rebels.org
+  name: indexernodes.terra.terra-rebels.org
 spec:
   group: terra.terra-rebels.org
   names:
-    kind: OracleNode
-    listKind: OracleNodeList
-    plural: oraclenodes
-    singular: oraclenode
+    kind: IndexerNode
+    listKind: IndexerNodeList
+    plural: indexernodes
+    singular: indexernode
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: OracleNode is the Schema for the OracleNodes API
+        description: IndexerNode is the Schema for the indexernodes API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -137,7 +137,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: 'TODO: Change to corev1.SecretEnvSource'
+            description: IndexerNodeSpec defines the desired state of IndexerNode
             properties:
               nodeImages:
                 items:
@@ -147,17 +147,15 @@ spec:
             - nodeImages
             type: object
           status:
-            description: OracleNodeStatus defines the observed state of OracleNode
+            description: IndexerNodeStatus defines the observed state of IndexerNode
             properties:
-              oracles:
+              indexers:
                 items:
                   type: string
                 type: array
             required:
-            - oracles
+            - indexers
             type: object
-        required:
-        - spec
         type: object
     served: true
     storage: true

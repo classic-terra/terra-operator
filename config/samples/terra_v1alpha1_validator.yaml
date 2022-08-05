@@ -4,7 +4,12 @@ metadata:
   name: validator-sample
 spec:
   terradNodeImage: terrarebels/terraclassic.terrad-node:latest-rebel-1 
-  oracleNodeImage: terrarebels/terraclassic.oracle-node:latest-rebel-1
+  oracleNodeImages: 
+    - terrarebels/terraclassic.oracle-price-server:latest-rebel-1
+    - terrarebels/terraclassic.oracle-feeder:latest-rebel-1
+  indexerNodeImages: 
+    - terrarebels/terraclassic.indexer-collector:latest-rebel-1
+    - terrarebels/terraclassic.indexer-api:latest-rebel-1
   chainId: columbus-1
   passphrase: "12345678"
   mnenomic: torch swamp cancel lift never october child harsh rib aspect luxury word peanut length bamboo hawk material vehicle glue above west random sketch author  

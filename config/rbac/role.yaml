@@ -83,6 +83,32 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - indexernodes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - indexernodes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - indexernodes/status
+  verbs:
+  - get
+  - patch
+  - update
 - apiGroups: [""]
   resources:
   - pods

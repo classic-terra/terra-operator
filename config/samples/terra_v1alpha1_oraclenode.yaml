@@ -3,4 +3,6 @@ kind: OracleNode
 metadata:
   name: oraclenode-sample
 spec:
-  nodeImage: terrarebels/terraclassic.oracle-node:latest-rebel-1 
+  nodeImages: 
+    - terrarebels/terraclassic.oracle-price-server:latest-rebel-1
+    - terrarebels/terraclassic.oracle-feeder:latest-rebel-1

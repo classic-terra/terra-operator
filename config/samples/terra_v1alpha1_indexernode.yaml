@@ -1,0 +1,8 @@
+apiVersion: terra.terra-rebels.org/v1alpha1
+kind: IndexerNode
+metadata:
+  name: indexernode-sample
+spec:
+  nodeImages: 
+    - terrarebels/terraclassic.indexer-collector:latest-rebel-1
+    - terrarebels/terraclassic.indexer-api:latest-rebel-1

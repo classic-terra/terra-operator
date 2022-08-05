@@ -1,0 +1,24 @@
+# permissions for end users to edit indexernodes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: indexernode-editor-role
+rules:
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - indexernodes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - indexernodes/status
+  verbs:
+  - get
