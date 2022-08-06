@@ -42,6 +42,7 @@ type IndexerNode struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
+	//TODO: Change to corev1.SecretEnvSource
 	Spec   IndexerNodeSpec   `json:"spec,omitempty"`
 	Status IndexerNodeStatus `json:"status,omitempty"`
 	Env    []corev1.EnvVar   `json:"env,omitempty"`

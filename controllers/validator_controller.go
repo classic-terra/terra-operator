@@ -171,24 +171,38 @@ func newIndexerNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Inde
 
 	envVars := []corev1.EnvVar{
 		{
-			Name:  "CHAIN_ID",
+			Name:  "INDEXER_CHAIN_ID",
 			Value: cr.Spec.ChainId,
 		},
 		{
-			Name:  "INITIAL_HEIGHT",
+			//TODO: Make this configurable from spec
+			Name:  "INDEXER_INITIAL_HEIGHT",
 			Value: "1",
 		},
 		{
-			Name:  "LCD_URI",
+			//TODO: Make this configurable from spec
+			Name:  "INDEXER_LCD_URI",
 			Value: "https://lcd.terra.dev",
 		},
 		{
-			Name:  "RPC_URI",
+			//TODO: Make this configurable from spec
+			Name:  "INDEXER_FCD_URI",
+			Value: "https://fcd.terra.dev",
+		},
+		{
+			//TODO: Make this configurable from spec
+			Name:  "INDEXER_RPC_URI",
 			Value: "https://localhost:26657",
 		},
 		{
-			Name:  "SERVER_PORT",
+			//TODO: Make this configurable from spec
+			Name:  "INDEXER_SERVER_PORT",
 			Value: "3060",
+		},
+		{
+			//TODO: Make this configurable from spec
+			Name:  "INDEXER_TOKEN_NETWORK",
+			Value: "mainnet",
 		},
 	}
 
@@ -214,30 +228,29 @@ func newOracleNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Oracl
 
 	envVars := []corev1.EnvVar{
 		{
-			Name:  "CHAIN_ID",
+			Name:  "ORACLE_FEEDER_CHAIN_ID",
 			Value: cr.Spec.ChainId,
 		},
-		//TODO: Make this configurable in case we want to split the feeder and price-server into two pods
 		{
-			Name:  "SOURCE",
+			Name:  "ORACLE_FEEDER_LCD_ADDRESSES",
+			Value: "https://lcd.terra.dev",
+		},
+		{
+			//TODO: Make this configurable from spec
+			Name:  "ORACLE_FEEDER_PRICE_ENDPOINT",
 			Value: "http://localhost:8532/latest",
 		},
 		{
-			Name:  "LCD_ADDRESS",
-			Value: "https://lcd.terra.dev",
-		},
-		//TODO: Figure out how to fetch this
-		{
-			Name:  "VALIDATOR",
-			Value: "FETCH_VALIDATOR_PUBKEY",
+			//TODO: Make this configurable from spec
+			Name:  "ORACLE_VALIDATOR_ADDRESSES",
+			Value: "terravaloper1xx",
 		},
 		{
-			Name:  "PASSPHRASE",
+			Name:  "ORACLE_FEEDER_PASSPHRASE",
 			Value: cr.Spec.Passphrase,
 		},
-		//TODO: Change oracle-feeder to accept mnenomic rather then key-path
 		{
-			Name:  "MNENOMIC",
+			Name:  "ORACLE_FEEDER_MNEMONIC",
 			Value: cr.Spec.Mnenomic,
 		},
 	}
