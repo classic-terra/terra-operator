@@ -137,7 +137,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: IndexerNodeSpec defines the desired state of IndexerNode
+            description: 'TODO: Change to corev1.SecretEnvSource'
             properties:
               nodeImages:
                 items:
