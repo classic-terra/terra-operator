@@ -171,7 +171,7 @@ func newIndexerNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Inde
 
 	envVars := []corev1.EnvVar{
 		{
-			Name:  "INDEXER_CHAIN_ID",
+			Name:  "CHAIN_ID",
 			Value: cr.Spec.ChainId,
 		},
 		{
@@ -228,21 +228,21 @@ func newOracleNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Oracl
 
 	envVars := []corev1.EnvVar{
 		{
-			Name:  "ORACLE_FEEDER_CHAIN_ID",
+			Name:  "CHAIN_ID",
 			Value: cr.Spec.ChainId,
 		},
 		{
-			Name:  "ORACLE_FEEDER_LCD_ADDRESSES",
+			Name:  "ORACLE_FEEDER_LCD_URIS",
 			Value: "https://lcd.terra.dev",
 		},
 		{
 			//TODO: Make this configurable from spec
-			Name:  "ORACLE_FEEDER_PRICE_ENDPOINT",
+			Name:  "ORACLE_FEEDER_PRICE_SERVER_URI",
 			Value: "http://localhost:8532/latest",
 		},
 		{
 			//TODO: Make this configurable from spec
-			Name:  "ORACLE_VALIDATOR_ADDRESSES",
+			Name:  "ORACLE_FEEDER_VALIDATOR_ADDRESSES",
 			Value: "terravaloper1xx",
 		},
 		{
