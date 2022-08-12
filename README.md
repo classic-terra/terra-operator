@@ -84,4 +84,4 @@ More information can be found via the [Kubebuilder Documentation](https://book.k
 
 Copyright 2022.
 
-All source code belongs to TR DAO
+All source code belongs to terra-rebels
