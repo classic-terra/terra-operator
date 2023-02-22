@@ -1,7 +1,7 @@
 # terra-operator
 
 ## Description
-The terra-operator is a project focused on creating a Kubernetes native operator that will simplify the process of deploying Validator nodes to any k8s cluster. 
+The terra-operator is a project focused on creating a Kubernetes native operator that will simplify the process of deploying Validator nodes to any k8s cluster.
 
 ## Getting started
 These instructions will help you setup the terra-operator on your k8s cluster. If you find yourself in a situation where one of more tools might not be working please reach out to us for assistance on how to proceed, post an [issue in our repository](https://github.com/terra-rebels/terra-operator/issues), fix it yourself & update the code via a [pull request](https://github.com/terra-rebels/terra-operator/pulls) or reach out to us on [Discord](https://discord.gg/zW43ghuMpa).
