@@ -23,9 +23,11 @@ import (
 
 // TerradNodeSpec defines the desired state of TerradNode
 type TerradNodeSpec struct {
-	NodeImage  string        `json:"nodeImage"`
-	IsFullNode bool          `json:"isFullNode,omitempty"`
-	DataVolume corev1.Volume `json:"dataVolume,omitempty"`
+	ChainId      string        `json:"chainId"`
+	NodeImage    string        `json:"nodeImage"`
+	IsFullNode   bool          `json:"isFullNode,omitempty"`
+	IsNewNetwork bool          `json:"isNewNetwork,omitempty"`
+	DataVolume   corev1.Volume `json:"dataVolume,omitempty"`
 }
 
 // TerradNodeStatus defines the observed state of TerradNode

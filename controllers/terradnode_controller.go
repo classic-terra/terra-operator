@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"strconv"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -45,9 +46,9 @@ func (r *TerradNodeReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes/finalizers,verbs=update
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes/finalizers,verbs=update
 func (r *TerradNodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
@@ -115,6 +116,17 @@ func newPodForTerradNode(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		},
 	}
 
+	envVars := []corev1.EnvVar{
+		{
+			Name:  "CHAINID",
+			Value: cr.Spec.ChainId,
+		},
+		{
+			Name:  "NEW_NETWORK",
+			Value: strconv.FormatBool(cr.Spec.IsNewNetwork),
+		},
+	}
+
 	// 4 CPUs & 32GB memory as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
 	minimumRequestLimits := corev1.ResourceList{}
 
@@ -140,7 +152,7 @@ func newPodForTerradNode(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 					Resources: corev1.ResourceRequirements{
 						Requests: minimumRequestLimits,
 					},
-					Env: cr.Env,
+					Env: envVars,
 				},
 			},
 		},

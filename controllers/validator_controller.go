@@ -48,9 +48,9 @@ func (r *ValidatorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=validators,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=validators/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=validators/finalizers,verbs=update
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=validators,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=validators/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=validators/finalizers,verbs=update
 func (r *ValidatorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 

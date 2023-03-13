@@ -50,10 +50,20 @@ func init() {
 
 func main() {
 	var metricsAddr string
-	var enableLeaderElection bool
 	var probeAddr string
+
+	var enableLeaderElection bool
+	var enableIndexer bool
+	var enableOracle bool
+	var enableValidator bool
+	var enableSecondNetwork bool
+
 	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
+	flag.BoolVar(&enableIndexer, "enable-indexer", false, "enable indexer node")
+	flag.BoolVar(&enableOracle, "enable-oracle", false, "enable oracle node")
+	flag.BoolVar(&enableValidator, "enable-validator", false, "enable validator node")
+	flag.BoolVar(&enableSecondNetwork, "enable-second-network", false, "enable second network")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
@@ -85,26 +95,35 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "TerradNode")
 		os.Exit(1)
 	}
-	if err = (&controllers.ValidatorReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Validator")
-		os.Exit(1)
+
+	if enableValidator {
+		if err = (&controllers.ValidatorReconciler{
+			Client: mgr.GetClient(),
+			Scheme: mgr.GetScheme(),
+		}).SetupWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Validator")
+			os.Exit(1)
+		}
 	}
-	if err = (&controllers.OracleNodeReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "OracleNode")
-		os.Exit(1)
+
+	if enableOracle {
+		if err = (&controllers.OracleNodeReconciler{
+			Client: mgr.GetClient(),
+			Scheme: mgr.GetScheme(),
+		}).SetupWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "OracleNode")
+			os.Exit(1)
+		}
 	}
-	if err = (&controllers.IndexerNodeReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "IndexerNode")
-		os.Exit(1)
+
+	if enableIndexer {
+		if err = (&controllers.IndexerNodeReconciler{
+			Client: mgr.GetClient(),
+			Scheme: mgr.GetScheme(),
+		}).SetupWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "IndexerNode")
+			os.Exit(1)
+		}
 	}
 	//+kubebuilder:scaffold:builder
 

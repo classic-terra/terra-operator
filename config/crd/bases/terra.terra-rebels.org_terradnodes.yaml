@@ -139,6 +139,8 @@ spec:
           spec:
             description: 'TODO: Change to corev1.SecretEnvSource'
             properties:
+              chainId:
+                type: string
               dataVolume:
                 description: Volume represents a named volume in a pod that may be
                   accessed by any container in the pod.
@@ -1583,9 +1585,12 @@ spec:
                 type: object
               isFullNode:
                 type: boolean
+              isNewNetwork:
+                type: boolean
               nodeImage:
                 type: string
             required:
+            - chainId
             - nodeImage
             type: object
           status:
