@@ -1,0 +1,16 @@
+apiVersion: terra.terra-rebels.org/v1alpha1
+kind: Relayer
+metadata:
+  name: relayer
+spec:
+  nodeImage: public.ecr.aws/p5q2r9h7/relayer:alpine3.17
+  firstNetwork:
+    networkName: atreides
+    gasAdjustment: 1.2
+    gasPrices: 0.001uluna
+    relayerKeyMnemonic: permit lava scene secret ball lava iron result reunion purpose sea badge focus rug cradle human plastic rough stand swarm pipe diagram deliver faculty
+  secondNetwork:
+    networkName: atreides
+    gasAdjustment: 1.2
+    gasPrices: 0.001uluna
+    relayerKeyMnemonic: permit lava scene secret ball lava iron result reunion purpose sea badge focus rug cradle human plastic rough stand swarm pipe diagram deliver faculty

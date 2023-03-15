@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -29,7 +30,17 @@ type RelayerSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Relayer. Edit relayer_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	NodeImage     string      `json:"nodeImage"`
+	FirstNetwork  NetworkSpec `json:"firstNetwork"`
+	SecondNetwork NetworkSpec `json:"secondNetwork"`
+}
+
+type NetworkSpec struct {
+	NetworkName        string `json:"networkName"`
+	GasAdjustment      string `json:"gasAdjustment"`
+	GasPrices          string `json:"gasPrices"`
+	RelayerKeyMnemonic string `json:"relayerKeyMnemonic"`
+	EnableDebug        bool   `json:"enableDebug"`
 }
 
 // RelayerStatus defines the observed state of Relayer
@@ -46,8 +57,9 @@ type Relayer struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   RelayerSpec   `json:"spec,omitempty"`
-	Status RelayerStatus `json:"status,omitempty"`
+	Spec   RelayerSpec     `json:"spec,omitempty"`
+	Status RelayerStatus   `json:"status,omitempty"`
+	Env    []corev1.EnvVar `json:"env,omitempty"`
 }
 
 //+kubebuilder:object:root=true

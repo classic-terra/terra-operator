@@ -18,10 +18,16 @@ package controllers
 
 import (
 	"context"
+	"strconv"
 
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	terrav1alpha1 "github.com/terra-rebels/terra-operator/api/v1alpha1"
@@ -47,9 +53,43 @@ type RelayerReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.0/pkg/reconcile
 func (r *RelayerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	logger.Info("Reconciling Relayer object")
+
+	relayer := &terrav1alpha1.Relayer{}
+	err := r.Client.Get(ctx, req.NamespacedName, relayer)
+
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return ctrl.Result{}, nil
+		}
+
+		return ctrl.Result{}, err
+	}
+
+	pod := newPodForRelayer(relayer)
+
+	if err := controllerutil.SetControllerReference(relayer, pod, r.Scheme); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	foundPod := &corev1.Pod{}
+	err = r.Client.Get(context.TODO(), types.NamespacedName{Name: pod.Name, Namespace: pod.Namespace}, foundPod)
+
+	if err != nil && errors.IsNotFound(err) {
+		logger.Info("Creating a new Pod", "Pod.Namespace", pod.Namespace, "Pod.Name", pod.Name)
+
+		err = r.Client.Create(context.TODO(), pod)
+
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+
+		return ctrl.Result{}, nil
+	} else if err != nil {
+		return ctrl.Result{}, err
+	}
 
 	return ctrl.Result{}, nil
 }
@@ -59,4 +99,72 @@ func (r *RelayerReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&terrav1alpha1.Relayer{}).
 		Complete(r)
+}
+
+func newPodForRelayer(cr *terrav1alpha1.Relayer) *corev1.Pod {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+
+	envVars := []corev1.EnvVar{
+		{
+			Name:  "FIRST_NETWORK_NAME",
+			Value: cr.Spec.FirstNetwork.NetworkName,
+		},
+		{
+			Name:  "FIRST_GAS_ADJUSTMENT",
+			Value: cr.Spec.FirstNetwork.GasAdjustment,
+		},
+		{
+			Name:  "FIRST_GAS_PRICES",
+			Value: cr.Spec.FirstNetwork.GasPrices,
+		},
+		{
+			Name:  "FIRST_DEBUG",
+			Value: strconv.FormatBool(cr.Spec.FirstNetwork.EnableDebug),
+		},
+		{
+			Name:  "FIRST_MNEMONIC",
+			Value: cr.Spec.FirstNetwork.RelayerKeyMnemonic,
+		},
+		{
+			Name:  "SECOND_NETWORK_NAME",
+			Value: cr.Spec.SecondNetwork.NetworkName,
+		},
+		{
+			Name:  "SECOND_GAS_ADJUSTMENT",
+			Value: cr.Spec.SecondNetwork.GasAdjustment,
+		},
+		{
+			Name:  "SECOND_GAS_PRICES",
+			Value: cr.Spec.SecondNetwork.GasPrices,
+		},
+		{
+			Name:  "SECOND_DEBUG",
+			Value: strconv.FormatBool(cr.Spec.SecondNetwork.EnableDebug),
+		},
+		{
+			Name:  "SECOND_MNEMONIC",
+			Value: cr.Spec.SecondNetwork.RelayerKeyMnemonic,
+		},
+	}
+
+	pod := &corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name,
+			Namespace: cr.Namespace,
+			Labels:    labels,
+		},
+		Spec: corev1.PodSpec{
+			Containers: []corev1.Container{
+				{
+					Name:  "relayer",
+					Image: cr.Spec.NodeImage,
+					Env:   envVars,
+				},
+			},
+		},
+	}
+
+	return pod
 }

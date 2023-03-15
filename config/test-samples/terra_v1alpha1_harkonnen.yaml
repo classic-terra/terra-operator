@@ -1,8 +1,8 @@
 apiVersion: terra.terra-rebels.org/v1alpha1
 kind: TerradNode
 metadata:
-  name: second-network-node
+  name: harkonnen
 spec:
-  nodeImage: public.ecr.aws/p5q2r9h7/node:latest
+  nodeImage: public.ecr.aws/p5q2r9h7/node:alpine3.17
   chainId: harkonnen
   isNewNetwork: true
