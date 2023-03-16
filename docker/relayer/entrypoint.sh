@@ -61,3 +61,6 @@ rly keys restore $SECOND_NETWORK_NAME "key-$SECOND_NETWORK_NAME" "$SECOND_MNEMON
 # relayer link
 printf "Waiting for relayer to start..."
 rly transact link "$FIRST_NETWORK_NAME-$SECOND_NETWORK_NAME" --src-port $SRC_PORT --dst-port $DST_PORT --version $VERSION
+
+# relayer start
+sh start.sh "$FIRST_NETWORK_NAME-$SECOND_NETWORK_NAME"
