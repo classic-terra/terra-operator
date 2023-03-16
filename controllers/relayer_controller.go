@@ -106,10 +106,51 @@ func newPodForRelayer(cr *terrav1alpha1.Relayer) *corev1.Pod {
 		"app": cr.Name,
 	}
 
+	srcPort := "transfer"
+	if cr.Spec.SrcPort != "" {
+		srcPort = cr.Spec.SrcPort
+	}
+
+	dstPort := "transfer"
+	if cr.Spec.DstPort != "" {
+		dstPort = cr.Spec.DstPort
+	}
+
+	icsVersion := "ics20-1"
+	if cr.Spec.ICSVersion != "" {
+		icsVersion = cr.Spec.ICSVersion
+	}
+
+	firstMinGasAmount := "0"
+	if cr.Spec.FirstNetwork.MinGasAmount != "" {
+		firstMinGasAmount = cr.Spec.FirstNetwork.MinGasAmount
+	}
+
+	secondMinGasAmount := "0"
+	if cr.Spec.SecondNetwork.MinGasAmount != "" {
+		secondMinGasAmount = cr.Spec.SecondNetwork.MinGasAmount
+	}
+
 	envVars := []corev1.EnvVar{
+		{
+			Name:  "SRC_PORT",
+			Value: srcPort,
+		},
+		{
+			Name:  "DST_PORT",
+			Value: dstPort,
+		},
+		{
+			Name:  "VERSION",
+			Value: icsVersion,
+		},
 		{
 			Name:  "FIRST_NETWORK_NAME",
 			Value: cr.Spec.FirstNetwork.NetworkName,
+		},
+		{
+			Name:  "FIRST_COIN_TYPE",
+			Value: cr.Spec.FirstNetwork.CoinType,
 		},
 		{
 			Name:  "FIRST_GAS_ADJUSTMENT",
@@ -118,6 +159,10 @@ func newPodForRelayer(cr *terrav1alpha1.Relayer) *corev1.Pod {
 		{
 			Name:  "FIRST_GAS_PRICES",
 			Value: cr.Spec.FirstNetwork.GasPrices,
+		},
+		{
+			Name:  "FIRST_MIN_GAS_AMOUNT",
+			Value: firstMinGasAmount,
 		},
 		{
 			Name:  "FIRST_DEBUG",
@@ -132,12 +177,20 @@ func newPodForRelayer(cr *terrav1alpha1.Relayer) *corev1.Pod {
 			Value: cr.Spec.SecondNetwork.NetworkName,
 		},
 		{
+			Name:  "SECOND_COIN_TYPE",
+			Value: cr.Spec.SecondNetwork.CoinType,
+		},
+		{
 			Name:  "SECOND_GAS_ADJUSTMENT",
 			Value: cr.Spec.SecondNetwork.GasAdjustment,
 		},
 		{
 			Name:  "SECOND_GAS_PRICES",
 			Value: cr.Spec.SecondNetwork.GasPrices,
+		},
+		{
+			Name:  "SECOND_MIN_GAS_AMOUNT",
+			Value: secondMinGasAmount,
 		},
 		{
 			Name:  "SECOND_DEBUG",
@@ -158,9 +211,10 @@ func newPodForRelayer(cr *terrav1alpha1.Relayer) *corev1.Pod {
 		Spec: corev1.PodSpec{
 			Containers: []corev1.Container{
 				{
-					Name:  "relayer",
-					Image: cr.Spec.NodeImage,
-					Env:   envVars,
+					Name:            "relayer",
+					Image:           cr.Spec.Container.Image,
+					Env:             envVars,
+					ImagePullPolicy: corev1.PullPolicy(cr.Spec.Container.ImagePullPolicy),
 				},
 			},
 		},

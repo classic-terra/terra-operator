@@ -30,17 +30,27 @@ type RelayerSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Relayer. Edit relayer_types.go to remove/update
-	NodeImage     string      `json:"nodeImage"`
-	FirstNetwork  NetworkSpec `json:"firstNetwork"`
-	SecondNetwork NetworkSpec `json:"secondNetwork"`
+	Container     ContainerSpec `json:"container"`
+	SrcPort       string        `json:"srcPort,omitempty"`
+	DstPort       string        `json:"dstPort,omitempty"`
+	ICSVersion    string        `json:"icsVersion,omitempty"`
+	FirstNetwork  NetworkSpec   `json:"firstNetwork"`
+	SecondNetwork NetworkSpec   `json:"secondNetwork"`
+}
+
+type ContainerSpec struct {
+	Image           string `json:"image"`
+	ImagePullPolicy string `json:"imagePullPolicy"`
 }
 
 type NetworkSpec struct {
 	NetworkName        string `json:"networkName"`
+	CoinType           string `json:"coinType,omitempty"`
 	GasAdjustment      string `json:"gasAdjustment"`
 	GasPrices          string `json:"gasPrices"`
+	MinGasAmount       string `json:"minGasAmount,omitempty"`
 	RelayerKeyMnemonic string `json:"relayerKeyMnemonic"`
-	EnableDebug        bool   `json:"enableDebug"`
+	EnableDebug        bool   `json:"enableDebug,omitempty"`
 }
 
 // RelayerStatus defines the observed state of Relayer

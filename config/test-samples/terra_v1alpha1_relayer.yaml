@@ -3,14 +3,20 @@ kind: Relayer
 metadata:
   name: relayer
 spec:
-  nodeImage: public.ecr.aws/p5q2r9h7/relayer:alpine3.17
+  container:
+    image: public.ecr.aws/p5q2r9h7/relayer:alpine3.17
+    imagePullPolicy: Always
   firstNetwork:
     networkName: atreides
-    gasAdjustment: 1.2
-    gasPrices: 0.001uluna
+    gasAdjustment: "1.5"
+    gasPrices: 1uluna
+    minGasAmount: "10000000"
     relayerKeyMnemonic: permit lava scene secret ball lava iron result reunion purpose sea badge focus rug cradle human plastic rough stand swarm pipe diagram deliver faculty
+    coinType: "330"
   secondNetwork:
-    networkName: atreides
-    gasAdjustment: 1.2
-    gasPrices: 0.001uluna
+    networkName: harkonnen
+    gasAdjustment: "1.5"
+    gasPrices: 1uluna
+    minGasAmount: "10000000"
     relayerKeyMnemonic: permit lava scene secret ball lava iron result reunion purpose sea badge focus rug cradle human plastic rough stand swarm pipe diagram deliver faculty
+    coinType: "330"

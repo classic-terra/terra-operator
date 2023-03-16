@@ -29,7 +29,14 @@ make deploy IMG=<some-registry>/terraclassic.operator:tag
 3. Install Instances of Custom Resources:
 
 ```sh
-kubectl apply -f config/samples/
+kubectl apply -f config/test-samples/
+```
+
+4. Expose service for two sample network
+
+```sh
+kubectl expose pod atreides
+kubectl expose pod harkonnen
 ```
 
 ### Uninstall CRDs
