@@ -2,11 +2,11 @@ version: '3.8'
 
 services:
   relayer:
-    image: classic-terra/relayer
+    image: public.ecr.aws/p5q2r9h7/relayer:alpine3.17
     build:
       context: relayer
       dockerfile: Dockerfile
       platforms:
         - "linux/amd64"
       labels:
-        - "classic-terra/relayer description=ibc relayer"
+        - "ibc relayer"

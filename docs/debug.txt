@@ -4,4 +4,4 @@ kubectl run relayer-cli --image=public.ecr.aws/p5q2r9h7/relayer:alpine3.17 --std
 
 kubectl exec atreides -- terrad tx ibc-transfer transfer transfer channel-0 terra1r9xyz4qgkktf4kycqnjj3tpsluaqxhzzqzke6x 100000000uluna --from test1 --keyring-backend test --chain-id atreides --fees 1000000uluna -y
 
-kubectl exec atreides -- terrad q bank balances terra1r9xyz4qgkktf4kycqnjj3tpsluaqxhzzqzke6x --node tcp://harkonnen:26657
+kubectl exec harkonnen -- terrad q bank balances terra1r9xyz4qgkktf4kycqnjj3tpsluaqxhzzqzke6x
