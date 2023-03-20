@@ -1,0 +1,12 @@
+apiVersion: terra.terra-rebels.org/v1alpha1
+kind: TerradNode
+metadata:
+  name: atreides
+spec:
+  nodeImage: public.ecr.aws/p5q2r9h7/node:alpine3.17
+  chainId: atreides
+  isNewNetwork: true
+  dataVolume:
+    name: node-volume
+    persistentVolumeClaim:
+      claimName: volume-claim
