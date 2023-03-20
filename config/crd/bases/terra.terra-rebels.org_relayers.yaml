@@ -151,9 +151,7 @@ spec:
                 - image
                 - imagePullPolicy
                 type: object
-              dstPort:
-                type: string
-              firstNetwork:
+              dstNetwork:
                 properties:
                   coinType:
                     type: string
@@ -175,9 +173,11 @@ spec:
                 - networkName
                 - relayerKeyMnemonic
                 type: object
+              dstPort:
+                type: string
               icsVersion:
                 type: string
-              secondNetwork:
+              srcNetwork:
                 properties:
                   coinType:
                     type: string
@@ -203,8 +203,8 @@ spec:
                 type: string
             required:
             - container
-            - firstNetwork
-            - secondNetwork
+            - dstNetwork
+            - srcNetwork
             type: object
           status:
             description: RelayerStatus defines the observed state of Relayer

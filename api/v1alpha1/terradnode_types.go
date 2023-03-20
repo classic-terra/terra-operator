@@ -27,6 +27,7 @@ type TerradNodeSpec struct {
 	NodeImage    string        `json:"nodeImage"`
 	IsFullNode   bool          `json:"isFullNode,omitempty"`
 	IsNewNetwork bool          `json:"isNewNetwork,omitempty"`
+	HasPeers     bool          `json:"hasPeers,omitempty"`
 	DataVolume   corev1.Volume `json:"dataVolume,omitempty"`
 }
 

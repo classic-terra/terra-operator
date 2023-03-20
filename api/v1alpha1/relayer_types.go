@@ -30,12 +30,12 @@ type RelayerSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Relayer. Edit relayer_types.go to remove/update
-	Container     ContainerSpec `json:"container"`
-	SrcPort       string        `json:"srcPort,omitempty"`
-	DstPort       string        `json:"dstPort,omitempty"`
-	ICSVersion    string        `json:"icsVersion,omitempty"`
-	FirstNetwork  NetworkSpec   `json:"firstNetwork"`
-	SecondNetwork NetworkSpec   `json:"secondNetwork"`
+	Container  ContainerSpec `json:"container"`
+	SrcPort    string        `json:"srcPort,omitempty"`
+	DstPort    string        `json:"dstPort,omitempty"`
+	ICSVersion string        `json:"icsVersion,omitempty"`
+	SrcNetwork NetworkSpec   `json:"srcNetwork"`
+	DstNetwork NetworkSpec   `json:"dstNetwork"`
 }
 
 type ContainerSpec struct {

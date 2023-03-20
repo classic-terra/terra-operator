@@ -98,6 +98,7 @@ func (r *RelayerReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 func (r *RelayerReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&terrav1alpha1.Relayer{}).
+		Owns(&corev1.Pod{}).
 		Complete(r)
 }
 
@@ -122,13 +123,13 @@ func newPodForRelayer(cr *terrav1alpha1.Relayer) *corev1.Pod {
 	}
 
 	firstMinGasAmount := "0"
-	if cr.Spec.FirstNetwork.MinGasAmount != "" {
-		firstMinGasAmount = cr.Spec.FirstNetwork.MinGasAmount
+	if cr.Spec.SrcNetwork.MinGasAmount != "" {
+		firstMinGasAmount = cr.Spec.SrcNetwork.MinGasAmount
 	}
 
 	secondMinGasAmount := "0"
-	if cr.Spec.SecondNetwork.MinGasAmount != "" {
-		secondMinGasAmount = cr.Spec.SecondNetwork.MinGasAmount
+	if cr.Spec.DstNetwork.MinGasAmount != "" {
+		secondMinGasAmount = cr.Spec.DstNetwork.MinGasAmount
 	}
 
 	envVars := []corev1.EnvVar{
@@ -145,60 +146,60 @@ func newPodForRelayer(cr *terrav1alpha1.Relayer) *corev1.Pod {
 			Value: icsVersion,
 		},
 		{
-			Name:  "FIRST_NETWORK_NAME",
-			Value: cr.Spec.FirstNetwork.NetworkName,
+			Name:  "SRC_NETWORK_NAME",
+			Value: cr.Spec.SrcNetwork.NetworkName,
 		},
 		{
-			Name:  "FIRST_COIN_TYPE",
-			Value: cr.Spec.FirstNetwork.CoinType,
+			Name:  "SRC_COIN_TYPE",
+			Value: cr.Spec.SrcNetwork.CoinType,
 		},
 		{
-			Name:  "FIRST_GAS_ADJUSTMENT",
-			Value: cr.Spec.FirstNetwork.GasAdjustment,
+			Name:  "SRC_GAS_ADJUSTMENT",
+			Value: cr.Spec.SrcNetwork.GasAdjustment,
 		},
 		{
-			Name:  "FIRST_GAS_PRICES",
-			Value: cr.Spec.FirstNetwork.GasPrices,
+			Name:  "SRC_GAS_PRICES",
+			Value: cr.Spec.SrcNetwork.GasPrices,
 		},
 		{
-			Name:  "FIRST_MIN_GAS_AMOUNT",
+			Name:  "SRC_MIN_GAS_AMOUNT",
 			Value: firstMinGasAmount,
 		},
 		{
-			Name:  "FIRST_DEBUG",
-			Value: strconv.FormatBool(cr.Spec.FirstNetwork.EnableDebug),
+			Name:  "SRC_DEBUG",
+			Value: strconv.FormatBool(cr.Spec.SrcNetwork.EnableDebug),
 		},
 		{
-			Name:  "FIRST_MNEMONIC",
-			Value: cr.Spec.FirstNetwork.RelayerKeyMnemonic,
+			Name:  "SRC_MNEMONIC",
+			Value: cr.Spec.SrcNetwork.RelayerKeyMnemonic,
 		},
 		{
-			Name:  "SECOND_NETWORK_NAME",
-			Value: cr.Spec.SecondNetwork.NetworkName,
+			Name:  "DST_NETWORK_NAME",
+			Value: cr.Spec.DstNetwork.NetworkName,
 		},
 		{
-			Name:  "SECOND_COIN_TYPE",
-			Value: cr.Spec.SecondNetwork.CoinType,
+			Name:  "DST_COIN_TYPE",
+			Value: cr.Spec.DstNetwork.CoinType,
 		},
 		{
-			Name:  "SECOND_GAS_ADJUSTMENT",
-			Value: cr.Spec.SecondNetwork.GasAdjustment,
+			Name:  "DST_GAS_ADJUSTMENT",
+			Value: cr.Spec.DstNetwork.GasAdjustment,
 		},
 		{
-			Name:  "SECOND_GAS_PRICES",
-			Value: cr.Spec.SecondNetwork.GasPrices,
+			Name:  "DST_GAS_PRICES",
+			Value: cr.Spec.DstNetwork.GasPrices,
 		},
 		{
-			Name:  "SECOND_MIN_GAS_AMOUNT",
+			Name:  "DST_MIN_GAS_AMOUNT",
 			Value: secondMinGasAmount,
 		},
 		{
-			Name:  "SECOND_DEBUG",
-			Value: strconv.FormatBool(cr.Spec.SecondNetwork.EnableDebug),
+			Name:  "DST_DEBUG",
+			Value: strconv.FormatBool(cr.Spec.DstNetwork.EnableDebug),
 		},
 		{
-			Name:  "SECOND_MNEMONIC",
-			Value: cr.Spec.SecondNetwork.RelayerKeyMnemonic,
+			Name:  "DST_MNEMONIC",
+			Value: cr.Spec.DstNetwork.RelayerKeyMnemonic,
 		},
 	}
 

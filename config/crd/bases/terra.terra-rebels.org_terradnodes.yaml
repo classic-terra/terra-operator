@@ -1583,6 +1583,8 @@ spec:
                 required:
                 - name
                 type: object
+              hasPeers:
+                type: boolean
               isFullNode:
                 type: boolean
               isNewNetwork:

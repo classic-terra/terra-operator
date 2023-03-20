@@ -32,13 +32,6 @@ make deploy IMG=<some-registry>/terraclassic.operator:tag
 kubectl apply -f config/test-samples/
 ```
 
-4. Expose service for two sample network
-
-```sh
-kubectl expose pod atreides
-kubectl expose pod harkonnen
-```
-
 ### Uninstall CRDs
 To delete the CRDs from the cluster:
 
