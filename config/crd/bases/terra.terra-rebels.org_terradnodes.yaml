@@ -141,6 +141,16 @@ spec:
             properties:
               chainId:
                 type: string
+              container:
+                properties:
+                  image:
+                    type: string
+                  imagePullPolicy:
+                    type: string
+                required:
+                - image
+                - imagePullPolicy
+                type: object
               dataVolume:
                 description: Volume represents a named volume in a pod that may be
                   accessed by any container in the pod.
@@ -1589,11 +1599,9 @@ spec:
                 type: boolean
               isNewNetwork:
                 type: boolean
-              nodeImage:
-                type: string
             required:
             - chainId
-            - nodeImage
+            - container
             type: object
           status:
             description: TerradNodeStatus defines the observed state of TerradNode

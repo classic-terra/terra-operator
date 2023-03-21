@@ -38,11 +38,6 @@ type RelayerSpec struct {
 	DstNetwork NetworkSpec   `json:"dstNetwork"`
 }
 
-type ContainerSpec struct {
-	Image           string `json:"image"`
-	ImagePullPolicy string `json:"imagePullPolicy"`
-}
-
 type NetworkSpec struct {
 	NetworkName        string `json:"networkName"`
 	CoinType           string `json:"coinType,omitempty"`

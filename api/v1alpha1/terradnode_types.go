@@ -23,8 +23,8 @@ import (
 
 // TerradNodeSpec defines the desired state of TerradNode
 type TerradNodeSpec struct {
+	Container    ContainerSpec `json:"container"`
 	ChainId      string        `json:"chainId"`
-	NodeImage    string        `json:"nodeImage"`
 	IsFullNode   bool          `json:"isFullNode,omitempty"`
 	IsNewNetwork bool          `json:"isNewNetwork,omitempty"`
 	HasPeers     bool          `json:"hasPeers,omitempty"`

@@ -326,7 +326,10 @@ func newTerradNodeForValidator(cr *terrav1alpha1.Validator) *terrav1alpha1.Terra
 		},
 		Env: envVars,
 		Spec: terrav1alpha1.TerradNodeSpec{
-			NodeImage:  cr.Spec.TerradNodeImage,
+			Container: terrav1alpha1.ContainerSpec{
+				Image:           cr.Spec.TerradNodeImage,
+				ImagePullPolicy: string(corev1.PullAlways),
+			},
 			IsFullNode: true,
 			DataVolume: cr.Spec.DataVolume,
 		},
