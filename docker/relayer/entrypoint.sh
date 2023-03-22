@@ -15,6 +15,11 @@ addChain() {
     CHAINID=$(terrad status --node $RPC | jq -r '.NodeInfo.network')
     # prefix will get the first account on the blockchain. Since a network must always have at least one validator, this query remains correct for all cases.
     PREFIX=$(terrad q staking validators --node $RPC -o json | jq -r '.validators[0].operator_address')
+    if [ "$PREFIX" = "null" ]; then
+        echo "Failed to get prefix from $NETWORK_NAME"
+        exit 1
+    fi
+
     PREFIX=${PREFIX%%valoper*}
     KEYRING=test
     TIMEOUT=30s

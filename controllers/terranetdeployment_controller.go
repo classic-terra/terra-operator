@@ -30,7 +30,8 @@ import (
 // TerraNetDeploymentReconciler reconciles a TerraNetDeployment object
 type TerraNetDeploymentReconciler struct {
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme  *runtime.Scheme
+	Replica int
 }
 
 //+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terranetdeployments,verbs=get;list;watch;create;update;patch;delete
