@@ -70,7 +70,9 @@ func main() {
 	opts := zap.Options{
 		Development: true,
 	}
+
 	opts.BindFlags(flag.CommandLine)
+	opts.BindFlags(GetNetworkFlag())
 	flag.Parse()
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
@@ -130,6 +132,13 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Relayer")
+		os.Exit(1)
+	}
+	if err = (&controllers.TerraNetDeploymentReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "TerraNetDeployment")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

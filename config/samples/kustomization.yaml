@@ -5,4 +5,5 @@ resources:
 - terra_v1alpha1_oraclefeeder.yaml
 - terra_v1alpha1_indexernode.yaml
 - terra_v1alpha1_relayer.yaml
+- terra_v1alpha1_terranetdeployment.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples

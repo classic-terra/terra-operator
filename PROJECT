@@ -52,4 +52,13 @@ resources:
   kind: Relayer
   path: github.com/terra-rebels/terra-operator/api/v1alpha1
   version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: terra-rebels.org
+  group: terra
+  kind: TerraNetDeployment
+  path: github.com/terra-rebels/terra-operator/api/v1alpha1
+  version: v1alpha1
 version: "3"
