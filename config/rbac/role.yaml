@@ -8,6 +8,32 @@ rules:
 - apiGroups:
   - terra.terra-rebels.org
   resources:
+  - TerradNets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - TerradNets/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
+  - TerradNets/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - terra.terra-rebels.org
+  resources:
   - relayers
   verbs:
   - create
@@ -27,32 +53,6 @@ rules:
   - terra.terra-rebels.org
   resources:
   - relayers/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - terra.terra-rebels.org
-  resources:
-  - terranetdeployments
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - terra.terra-rebels.org
-  resources:
-  - terranetdeployments/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - terra.terra-rebels.org
-  resources:
-  - terranetdeployments/status
   verbs:
   - get
   - patch

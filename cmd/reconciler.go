@@ -56,7 +56,7 @@ func SetupManager(cmd *cobra.Command) (manager.Manager, error) {
 
 func AssembleReconciler(cmd *cobra.Command, mgr manager.Manager) error {
 
-	reconcilers := []Reconciler{&controllers.IndexerNodeReconciler{}}
+	reconcilers := []Reconciler{}
 
 	if enable, _ := cmd.Flags().GetBool(RelayerService); enable {
 		reconcilers = append(reconcilers, &controllers.RelayerReconciler{

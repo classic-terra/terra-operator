@@ -192,7 +192,7 @@ func newPodForTerradNode(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			{
 				Name: cr.Spec.DataVolume.Name,
 				//TODO: Test successful mounting of pre-downloaded columbus-5 snapshot
-				MountPath: "/terra/testnet",
+				MountPath: "/terra",
 			},
 		}
 	}

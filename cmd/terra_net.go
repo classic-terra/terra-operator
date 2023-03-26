@@ -17,7 +17,7 @@ func GetNetworkCmd() *cobra.Command {
 		Short: "start network deployment",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			replica, err := cmd.Flags().GetInt(NetworkReplica)
+			replica, err := cmd.Flags().GetInt32(NetworkReplica)
 			if err != nil {
 				return err
 			}
@@ -27,12 +27,12 @@ func GetNetworkCmd() *cobra.Command {
 				return err
 			}
 
-			if err = (&controllers.TerraNetDeploymentReconciler{
+			if err = (&controllers.TerradNetReconciler{
 				Client:  mgr.GetClient(),
 				Scheme:  mgr.GetScheme(),
 				Replica: replica,
 			}).SetupWithManager(mgr); err != nil {
-				return fmt.Errorf("unable to create controller TerraNetDeployment: %v", err)
+				return fmt.Errorf("unable to create controller TerradNet: %v", err)
 			}
 
 			if err := AssembleReconciler(cmd, mgr); err != nil {
@@ -47,7 +47,7 @@ func GetNetworkCmd() *cobra.Command {
 		},
 	}
 
-	networkCmd.Flags().Int(NetworkReplica, 1, "Number of network replica")
+	networkCmd.Flags().Int32(NetworkReplica, 0, "Number of network replica")
 
 	// default option
 	AddCommonFlagsToCmd(networkCmd)

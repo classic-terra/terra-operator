@@ -1,0 +1,27 @@
+apiVersion: batch/v1 
+kind: Job 
+metadata:   
+  name: localnet-atreides-setup
+spec:
+  backoffLimit: 3  
+  ttlSecondsAfterFinished: 0
+  template:
+    spec:       
+      containers:       
+      - name: localnet-atreides-setup      
+        image: public.ecr.aws/p5q2r9h7/node:alpine3.17
+        imagePullPolicy: Always
+        command: ["/bin/sh", "/setup-localnet.sh"]
+        volumeMounts:
+        - name: job-volume
+          mountPath: /terra
+        env:
+        - name: CHAINID
+          value: atreides
+        - name: REPLICA
+          value: "7"
+      restartPolicy: Never
+      volumes:
+      - name: job-volume
+        persistentVolumeClaim:
+          claimName: atreides-config

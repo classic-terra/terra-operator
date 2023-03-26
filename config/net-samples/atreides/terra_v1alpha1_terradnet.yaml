@@ -1,14 +1,14 @@
 apiVersion: terra.terra-rebels.org/v1alpha1
-kind: TerradNode
+kind: TerradNet
 metadata:
   name: atreides
 spec:
   container:
     image: public.ecr.aws/p5q2r9h7/node:alpine3.17
     imagePullPolicy: Always
-  chainId: localterra
-  isNewNetwork: true
-  dataVolume:
-    name: node-volume
+  chainId: atreides
+  serviceName: atreides-service
+  dataSource:
+    name: data-source
     persistentVolumeClaim:
-      claimName: volume-claim
+      claimName: atreides-config

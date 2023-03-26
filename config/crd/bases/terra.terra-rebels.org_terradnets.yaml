@@ -5,21 +5,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: terranetdeployments.terra.terra-rebels.org
+  name: terradnets.terra.terra-rebels.org
 spec:
   group: terra.terra-rebels.org
   names:
-    kind: TerraNetDeployment
-    listKind: TerraNetDeploymentList
-    plural: terranetdeployments
-    singular: terranetdeployment
+    kind: TerradNet
+    listKind: TerradNetList
+    plural: terradnets
+    singular: terradnet
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: TerraNetDeployment is the Schema for the terranetdeployments
-          API
+        description: TerradNet is the Schema for the TerradNets API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -138,9 +137,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: TerraNetDeploymentSpec defines the desired state of TerraNetDeployment
-              TerraNet is only viable for simulating a tesnet. It cannot be used for
-              mainnet.
+            description: TerradNetSpec defines the desired state of TerradNet TerradNet
+              is only viable for simulating a tesnet. It cannot be used for mainnet.
             properties:
               chainId:
                 type: string
@@ -154,7 +152,7 @@ spec:
                 - image
                 - imagePullPolicy
                 type: object
-              dataVolume:
+              dataSource:
                 description: Volume represents a named volume in a pod that may be
                   accessed by any container in the pod.
                 properties:
@@ -1599,13 +1597,16 @@ spec:
               replica:
                 format: int32
                 type: integer
+              serviceName:
+                type: string
             required:
             - chainId
             - container
-            - replica
+            - dataSource
+            - serviceName
             type: object
           status:
-            description: TerraNetDeploymentStatus defines the observed state of TerraNetDeployment
+            description: TerradNetStatus defines the observed state of TerradNet
             properties:
               nodes:
                 items:

@@ -1,14 +1,14 @@
 apiVersion: terra.terra-rebels.org/v1alpha1
-kind: TerradNode
+kind: TerradNet
 metadata:
-  name: atreides
+  name: harkonnen
 spec:
   container:
     image: public.ecr.aws/p5q2r9h7/node:alpine3.17
     imagePullPolicy: Always
-  chainId: localterra
-  isNewNetwork: true
-  dataVolume:
-    name: node-volume
+  chainId: harkonnen
+  serviceName: harkonnen-service
+  dataSource:
+    name: data-source
     persistentVolumeClaim:
-      claimName: volume-claim
+      claimName: harkonnen-config
