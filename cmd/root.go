@@ -15,7 +15,7 @@ var (
 	setupLog = ctrl.Log.WithName("setup")
 
 	rootCmd = &cobra.Command{
-		Use:   "terra-operator",
+		Use:   "kubectl-terra_operator",
 		Short: "A Kubernetes operator for Terra",
 	}
 )

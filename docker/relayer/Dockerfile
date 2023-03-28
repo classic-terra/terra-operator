@@ -10,7 +10,7 @@ RUN git clone https://github.com/cosmos/relayer.git \
     && git checkout $COMMIT_HASH \
     && make install
 
-FROM public.ecr.aws/p5q2r9h7/core:alpine3.17
+FROM public.ecr.aws/classic-terra/core:alpine3.17
 COPY --from=builder /go/bin/rly /usr/local/bin/
 
 # Create startup script that takes a path as a parameter

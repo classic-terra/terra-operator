@@ -4,7 +4,7 @@ metadata:
   name: relayer
 spec:
   container:
-    image: public.ecr.aws/p5q2r9h7/relayer:alpine3.17
+    image: public.ecr.aws/classic-terra/relayer:alpine3.17
     imagePullPolicy: Always
   srcNetwork:
     networkName: atreides

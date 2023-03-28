@@ -18,8 +18,11 @@ package controllers
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	appsv1 "k8s.io/api/apps/v1"
+	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -44,6 +47,8 @@ type TerradNetReconciler struct {
 //+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=TerradNets,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=TerradNets/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=TerradNets/finalizers,verbs=update
+//+kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=batch,resources=jobs/status,verbs=get
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -69,6 +74,29 @@ func (r *TerradNetReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
+	job := newJobForTerradNet(terradNet, r.Replica)
+
+	if err := controllerutil.SetControllerReference(terradNet, job, r.Scheme); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	foundJob := &batchv1.Job{}
+	err = r.Client.Get(context.TODO(), types.NamespacedName{Name: job.Name, Namespace: job.Namespace}, foundJob)
+
+	if err != nil && errors.IsNotFound(err) {
+		logger.Info("Creating a new Job", "job.Namespace", job.Namespace, "job.Name", job.Name)
+
+		err = r.Client.Create(context.TODO(), job)
+
+		if err != nil {
+			return ctrl.Result{}, err
+		}
+
+		return ctrl.Result{}, nil
+	} else if err != nil {
+		return ctrl.Result{}, err
+	}
+
 	statefulSet := newStatefulSetForTerradNet(terradNet, r.Replica)
 
 	if err := controllerutil.SetControllerReference(terradNet, statefulSet, r.Scheme); err != nil {
@@ -76,7 +104,7 @@ func (r *TerradNetReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 
 	foundSet := &appsv1.StatefulSet{}
-	err = r.Client.Get(context.TODO(), types.NamespacedName{Name: terradNet.Name, Namespace: terradNet.Namespace}, foundSet)
+	err = r.Client.Get(context.TODO(), types.NamespacedName{Name: statefulSet.Name, Namespace: statefulSet.Namespace}, foundSet)
 
 	if err != nil && errors.IsNotFound(err) {
 		logger.Info("Creating a new StatefulSet", "StatefulSet.Namespace", statefulSet.Namespace, "StatefulSet.Name", statefulSet.Name)
@@ -99,8 +127,57 @@ func (r *TerradNetReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 func (r *TerradNetReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&terrav1alpha1.TerradNet{}).
+		Owns(&batchv1.Job{}).
 		Owns(&appsv1.StatefulSet{}).
 		Complete(r)
+}
+
+func newJobForTerradNet(cr *terrav1alpha1.TerradNet, replica int32) *batchv1.Job {
+	containers := []corev1.Container{
+		{
+			Name:            "job",
+			Image:           cr.Spec.Container.Image,
+			ImagePullPolicy: corev1.PullPolicy(cr.Spec.Container.ImagePullPolicy),
+			Command:         []string{"/bin/sh", "/setup-localnet.sh"},
+			VolumeMounts: []corev1.VolumeMount{
+				{
+					Name:      cr.Spec.DataSource.Name,
+					MountPath: "/terra",
+				},
+			},
+			Env: []corev1.EnvVar{
+				{
+					Name:  "CHAINID",
+					Value: cr.Spec.ChainId,
+				},
+				{
+					Name:  "REPLICA",
+					Value: strconv.FormatInt(int64(replica), 10),
+				},
+			},
+		},
+	}
+
+	backOffLimit := int32(3)
+
+	job := &batchv1.Job{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fmt.Sprintf("localnet-%s-setup", cr.Name),
+			Namespace: "default",
+		},
+		Spec: batchv1.JobSpec{
+			BackoffLimit: &backOffLimit,
+			Template: corev1.PodTemplateSpec{
+				Spec: corev1.PodSpec{
+					Containers:    containers,
+					RestartPolicy: corev1.RestartPolicyNever,
+					Volumes:       []corev1.Volume{cr.Spec.DataSource},
+				},
+			},
+		},
+	}
+
+	return job
 }
 
 func newStatefulSetForTerradNet(cr *terrav1alpha1.TerradNet, replica int32) *appsv1.StatefulSet {
@@ -170,6 +247,10 @@ func newStatefulSetForTerradNet(cr *terrav1alpha1.TerradNet, replica int32) *app
 				{
 					Name:  "SERVICE_NAME",
 					Value: cr.Spec.ServiceName,
+				},
+				{
+					Name:  "CHAINID",
+					Value: cr.Spec.ChainId,
 				},
 			},
 			VolumeMounts: []corev1.VolumeMount{

@@ -3,7 +3,7 @@ kind: Validator
 metadata:
   name: validator-sample
 spec:
-  terradNodeImage: public.ecr.aws/p5q2r9h7/node:latest
+  terradNodeImage: public.ecr.aws/classic-terra/node:latest
   oracleNodeImages: 
     - terrarebels/terraclassic.oracle-price-server:latest-rebel-1
     - terrarebels/terraclassic.oracle-feeder:latest-rebel-1

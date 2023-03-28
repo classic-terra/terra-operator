@@ -4,7 +4,7 @@ metadata:
   name: harkonnen
 spec:
   container:
-    image: public.ecr.aws/p5q2r9h7/node:alpine3.17
+    image: public.ecr.aws/classic-terra/node:alpine3.17
     imagePullPolicy: Always
   chainId: harkonnen
   isNewNetwork: true

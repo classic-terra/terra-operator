@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: my-container
-        image: public.ecr.aws/p5q2r9h7/node:alpine3.17
+        image: public.ecr.aws/classic-terra/node:alpine3.17
         ports:
         - containerPort: 26657
         env:
