@@ -24,6 +24,7 @@ import (
 // ValidatorSpec defines the desired state of Validator
 type ValidatorSpec struct {
 	ChainId                 string        `json:"chainId"`
+	IsNewNetwork            bool          `json:"isNewNetwork,omitempty"`
 	TerradNodeImage         string        `json:"terradNodeImage"`
 	OracleNodeImages        []string      `json:"oracleNodeImages"`
 	IndexerNodeImages       []string      `json:"indexerNodeImages"`

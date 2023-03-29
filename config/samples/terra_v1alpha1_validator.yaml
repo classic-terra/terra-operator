@@ -3,7 +3,7 @@ kind: Validator
 metadata:
   name: validator-sample
 spec:
-  terradNodeImage: terrarebels/terraclassic.terrad-node:latest-rebel-1 
+  terradNodeImage: public.ecr.aws/classic-terra/node:latest
   oracleNodeImages: 
     - terrarebels/terraclassic.oracle-price-server:latest-rebel-1
     - terrarebels/terraclassic.oracle-feeder:latest-rebel-1
@@ -19,4 +19,5 @@ spec:
   commissionRateMaxChange: "0.01"
   minimumSelfDelegation: "1"
   isPublic: true
-  autoConfig: true
+  isNewNetwork: true
+  autoConfig: false

@@ -139,6 +139,18 @@ spec:
           spec:
             description: 'TODO: Change to corev1.SecretEnvSource'
             properties:
+              chainId:
+                type: string
+              container:
+                properties:
+                  image:
+                    type: string
+                  imagePullPolicy:
+                    type: string
+                required:
+                - image
+                - imagePullPolicy
+                type: object
               dataVolume:
                 description: Volume represents a named volume in a pod that may be
                   accessed by any container in the pod.
@@ -1581,12 +1593,15 @@ spec:
                 required:
                 - name
                 type: object
+              hasPeers:
+                type: boolean
               isFullNode:
                 type: boolean
-              nodeImage:
-                type: string
+              isNewNetwork:
+                type: boolean
             required:
-            - nodeImage
+            - chainId
+            - container
             type: object
           status:
             description: TerradNodeStatus defines the observed state of TerradNode

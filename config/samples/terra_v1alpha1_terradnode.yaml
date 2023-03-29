@@ -1,6 +1,0 @@
-apiVersion: terra.terra-rebels.org/v1alpha1
-kind: TerradNode
-metadata:
-  name: terradnode-sample
-spec:
-  nodeImage: terrarebels/terraclassic.terrad-node:latest-rebel-1 

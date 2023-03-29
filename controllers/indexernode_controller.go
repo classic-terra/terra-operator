@@ -40,9 +40,9 @@ func (r *IndexerNodeReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=indexernodes,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=indexernodes/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=indexernodes/finalizers,verbs=update
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=indexernodes,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=indexernodes/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=indexernodes/finalizers,verbs=update
 func (r *IndexerNodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 

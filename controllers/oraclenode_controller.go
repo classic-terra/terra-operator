@@ -45,9 +45,9 @@ func (r *OracleNodeReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclenodes,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclenodes/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclenodes/finalizers,verbs=update
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclenodes,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclenodes/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=oraclenodes/finalizers,verbs=update
 func (r *OracleNodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 

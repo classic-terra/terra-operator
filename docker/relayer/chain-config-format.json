@@ -1,0 +1,17 @@
+{
+    "type": "cosmos",
+    "value": {
+        "key": "",
+        "chain-id": "",
+        "rpc-addr": "",
+        "account-prefix": "",
+        "keyring-backend": "",
+        "gas-adjustment": 0,
+        "gas-prices": "",
+        "min-gas-amount": 0,
+        "debug": false,
+        "timeout": "0s",
+        "output-format": "json",
+        "sign-mode": "direct"
+    }
+}

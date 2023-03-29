@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"strconv"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -25,6 +26,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -42,12 +44,13 @@ func (r *TerradNodeReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&terrav1alpha1.TerradNode{}).
 		Owns(&corev1.Pod{}).
+		Owns(&corev1.Service{}).
 		Complete(r)
 }
 
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes/finalizers,verbs=update
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=terra.terra-rebels.org,resources=terradnodes/finalizers,verbs=update
 func (r *TerradNodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
@@ -87,6 +90,31 @@ func (r *TerradNodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return ctrl.Result{}, err
 	}
 
+	if !terradNode.Spec.HasPeers {
+		service := newServiceForTerradNode(terradNode)
+
+		if err := controllerutil.SetControllerReference(terradNode, service, r.Scheme); err != nil {
+			return ctrl.Result{}, err
+		}
+
+		foundService := &corev1.Service{}
+		err = r.Client.Get(context.TODO(), types.NamespacedName{Name: service.Name, Namespace: service.Namespace}, foundService)
+
+		if err != nil && errors.IsNotFound(err) {
+			logger.Info("Creating a new Service", "Service.Namespace", service.Namespace, "Service.Name", service.Name)
+
+			err = r.Client.Create(context.TODO(), service)
+
+			if err != nil {
+				return ctrl.Result{}, err
+			}
+
+			return ctrl.Result{}, nil
+		} else if err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
 	return ctrl.Result{}, nil
 }
 
@@ -115,6 +143,17 @@ func newPodForTerradNode(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 		},
 	}
 
+	envVars := []corev1.EnvVar{
+		{
+			Name:  "CHAINID",
+			Value: cr.Spec.ChainId,
+		},
+		{
+			Name:  "NEW_NETWORK",
+			Value: strconv.FormatBool(cr.Spec.IsNewNetwork),
+		},
+	}
+
 	// 4 CPUs & 32GB memory as minimum requirement @ https://docs.terra.money/docs/full-node/run-a-full-terra-node/system-config.html
 	minimumRequestLimits := corev1.ResourceList{}
 
@@ -135,12 +174,13 @@ func newPodForTerradNode(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			Containers: []corev1.Container{
 				{
 					Name:  "terradnode",
-					Image: cr.Spec.NodeImage,
+					Image: cr.Spec.Container.Image,
 					Ports: ports,
 					Resources: corev1.ResourceRequirements{
 						Requests: minimumRequestLimits,
 					},
-					Env: cr.Env,
+					Env:             envVars,
+					ImagePullPolicy: corev1.PullPolicy(cr.Spec.Container.ImagePullPolicy),
 				},
 			},
 		},
@@ -152,10 +192,45 @@ func newPodForTerradNode(cr *terrav1alpha1.TerradNode) *corev1.Pod {
 			{
 				Name: cr.Spec.DataVolume.Name,
 				//TODO: Test successful mounting of pre-downloaded columbus-5 snapshot
-				MountPath: "/terra/.terra/data/",
+				MountPath: "/terra",
 			},
 		}
 	}
 
 	return pod
+}
+
+func newServiceForTerradNode(cr *terrav1alpha1.TerradNode) *corev1.Service {
+	labels := map[string]string{
+		"app": cr.Name,
+	}
+
+	selector := map[string]string{
+		"app": cr.Name,
+	}
+
+	ports := []corev1.ServicePort{
+		{
+			Name:       "rpc",
+			Port:       26657,
+			TargetPort: intstr.FromString("rpc"),
+		},
+		{
+			Name:       "lcd",
+			Port:       1317,
+			TargetPort: intstr.FromString("lcd"),
+		},
+	}
+
+	return &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      cr.Name,
+			Namespace: cr.Namespace,
+			Labels:    labels,
+		},
+		Spec: corev1.ServiceSpec{
+			Ports:    ports,
+			Selector: selector,
+		},
+	}
 }

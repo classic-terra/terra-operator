@@ -8,7 +8,7 @@ rules:
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - terradnodes
+  - TerradNets
   verbs:
   - create
   - delete
@@ -20,13 +20,13 @@ rules:
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - terradnodes/finalizers
+  - TerradNets/finalizers
   verbs:
   - update
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - terradnodes/status
+  - TerradNets/status
   verbs:
   - get
   - patch
@@ -34,7 +34,7 @@ rules:
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - validators
+  - relayers
   verbs:
   - create
   - delete
@@ -46,78 +46,14 @@ rules:
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - validators/finalizers
+  - relayers/finalizers
   verbs:
   - update
 - apiGroups:
   - terra.terra-rebels.org
   resources:
-  - validators/status
-  verbs:
-  - get
-  - patch
-  - update  
-- apiGroups:
-  - terra.terra-rebels.org
-  resources:
-  - oraclenodes
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - terra.terra-rebels.org
-  resources:
-  - oraclenodes/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - terra.terra-rebels.org
-  resources:
-  - oraclenodes/status
+  - relayers/status
   verbs:
   - get
   - patch
   - update
-- apiGroups:
-  - terra.terra-rebels.org
-  resources:
-  - indexernodes
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - terra.terra-rebels.org
-  resources:
-  - indexernodes/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - terra.terra-rebels.org
-  resources:
-  - indexernodes/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups: [""]
-  resources:
-  - pods
-  - services
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch

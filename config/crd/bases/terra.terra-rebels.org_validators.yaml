@@ -1495,6 +1495,8 @@ spec:
                 items:
                   type: string
                 type: array
+              isNewNetwork:
+                type: boolean
               isPublic:
                 type: boolean
               minimumSelfDelegation:

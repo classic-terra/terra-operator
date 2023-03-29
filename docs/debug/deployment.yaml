@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: atreides
+  template:
+    metadata:
+      labels:
+        app: atreides
+    spec:
+      containers:
+      - name: my-container
+        image: public.ecr.aws/classic-terra/node:alpine3.17
+        ports:
+        - containerPort: 26657
+        env:
+        - name: CHAINID
+          value: atreides
+        - name: NEW_NETWORK
+          value: "true"

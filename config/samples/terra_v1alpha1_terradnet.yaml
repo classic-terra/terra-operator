@@ -1,0 +1,12 @@
+apiVersion: terra.terra-rebels.org/v1alpha1
+kind: TerradNet
+metadata:
+  labels:
+    app.kubernetes.io/name: TerradNet
+    app.kubernetes.io/instance: TerradNet-sample
+    app.kubernetes.io/part-of: terra-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: terra-operator
+  name: TerradNet-sample
+spec:
+  # TODO(user): Add fields here

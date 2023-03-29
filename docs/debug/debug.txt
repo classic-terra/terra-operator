@@ -1,0 +1,7 @@
+SRC_NETWORK_NAME=atreides SRC_MIN_GAS_AMOUNT=1000000 DST_MIN_GAS_AMOUNT=1000000 SRC_COIN_TYPE="330" DST_COIN_TYPE="330" SRC_GAS_ADJUSTMENT=2.0 SRC_GAS_PRICES=100uluna SRC_DEBUG=true SRC_MNEMONIC="permit lava scene secret ball lava iron result reunion purpose sea badge focus rug cradle human plastic rough stand swarm pipe diagram deliver faculty" DST_NETWORK_NAME=harkonnen DST_GAS_ADJUSTMENT=2.0 DST_GAS_PRICES=100uluna DST_DEBUG=true DST_MNEMONIC="permit lava scene secret ball lava iron result reunion purpose sea badge focus rug cradle human plastic rough stand swarm pipe diagram deliver faculty" SRC_PORT=transfer DST_PORT=transfer VERSION=ics20-1 sh /entrypoint.sh
+
+kubectl run relayer-cli --image=public.ecr.aws/classic-terra/relayer:alpine3.17 --stdin --tty -- /bin/sh
+
+kubectl exec atreides -- terrad tx ibc-transfer transfer transfer channel-0 terra1r9xyz4qgkktf4kycqnjj3tpsluaqxhzzqzke6x 100000000uluna --from test1 --keyring-backend test --chain-id atreides --fees 1000000uluna -y
+
+kubectl exec harkonnen -- terrad q bank balances terra1r9xyz4qgkktf4kycqnjj3tpsluaqxhzzqzke6x

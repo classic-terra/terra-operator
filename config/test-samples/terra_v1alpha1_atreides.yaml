@@ -1,0 +1,10 @@
+apiVersion: terra.terra-rebels.org/v1alpha1
+kind: TerradNode
+metadata:
+  name: atreides
+spec:
+  container:
+    image: public.ecr.aws/classic-terra/node:alpine3.17
+    imagePullPolicy: Always
+  chainId: atreides
+  isNewNetwork: true
